@@ -3,75 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <title>SURVIVE YOUR BOSS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:100%;overflow:hidden;background:#0A0A0F;font-family:'Courier New',monospace}
-body{display:flex;align-items:center;justify-content:center}
-#wrap{position:relative;width:100vw;height:100vh}
-canvas{position:absolute;top:0;left:0;width:100%;height:100%}
-#rotate-msg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0A0A0F;z-index:999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-#rotate-msg h2{color:#C9A84C;font-size:32px;letter-spacing:3px;margin-bottom:16px}
-#rotate-msg p{color:#AAAABC;font-size:14px;letter-spacing:2px}
-#rotate-msg .icon{font-size:60px;margin-bottom:20px}
-@media(orientation:portrait){#rotate-msg{display:flex}#wrap{display:none}}
+
+/* LOCK SCREEN - HTML based, not canvas */
+#lockScreen{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:#0A0A0F;z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;overflow-y:auto;
+}
+#lockScreen h1{color:#C9A84C;font-size:clamp(28px,8vw,52px);letter-spacing:4px;margin-bottom:4px;line-height:1.1}
+#lockScreen .tagline{color:#AAAABC;font-size:clamp(11px,3vw,15px);letter-spacing:2px;margin-bottom:20px}
+.price-box{border:2px solid #C9A84C;padding:16px 32px;margin-bottom:16px;background:rgba(201,168,76,0.08);width:100%;max-width:340px}
+.price-box .price{color:#C9A84C;font-size:clamp(28px,8vw,44px);font-weight:900;letter-spacing:2px}
+.price-box .sub{color:#AAAABC;font-size:clamp(11px,3vw,13px);margin-top:4px}
+.buy-btn{
+  display:block;width:100%;max-width:340px;
+  background:#C9A84C;color:#0A0A0F;
+  font-size:clamp(14px,4vw,18px);font-weight:900;letter-spacing:2px;
+  padding:16px;border:none;cursor:pointer;
+  font-family:'Courier New',monospace;margin-bottom:20px;
+}
+.divider{width:100%;max-width:340px;height:1px;background:#2A2A3A;margin-bottom:16px}
+.already{color:#AAAABC;font-size:clamp(11px,3vw,13px);margin-bottom:12px;letter-spacing:1px}
+.code-input{
+  width:100%;max-width:340px;
+  background:#111118;border:2px solid #2A2A3A;
+  color:#fff;font-size:clamp(18px,5vw,24px);
+  font-weight:700;letter-spacing:4px;text-align:center;
+  padding:14px;font-family:'Courier New',monospace;
+  outline:none;margin-bottom:8px;
+  text-transform:uppercase;
+  -webkit-appearance:none;
+}
+.code-input:focus{border-color:#C9A84C}
+.lock-err{color:#E05555;font-size:clamp(11px,3vw,13px);min-height:20px;margin-bottom:12px}
+.enter-btn{
+  width:100%;max-width:340px;
+  background:#C9A84C;color:#0A0A0F;
+  font-size:clamp(14px,4vw,18px);font-weight:900;
+  padding:14px;border:none;cursor:pointer;
+  font-family:'Courier New',monospace;letter-spacing:2px;
+  margin-bottom:20px;
+}
+.don-box{
+  width:100%;max-width:340px;
+  background:rgba(201,168,76,0.06);
+  border-left:3px solid #C9A84C;
+  padding:12px 16px;text-align:left;margin-bottom:8px;
+}
+.don-box p{color:#fff;font-size:clamp(11px,3vw,13px);line-height:1.7}
+.don-box span{color:#AAAABC;font-size:clamp(10px,2.5vw,12px)}
+
+/* GAME */
+#gameWrap{position:fixed;top:0;left:0;width:100%;height:100%;display:none}
+canvas{width:100%;height:100%}
 </style>
 </head>
 <body>
-<div id="rotate-msg">
-  <div class="icon">📱</div>
-  <h2>ROTATE YOUR PHONE</h2>
-  <p>Play in landscape mode for best experience</p>
+
+<!-- LOCK SCREEN - HTML -->
+<div id="lockScreen">
+  <h1>SURVIVE<br>YOUR BOSS</h1>
+  <div class="tagline">They won't stop. Neither should you.</div>
+
+  <div class="price-box">
+    <div class="price">Rp 15.000</div>
+    <div class="sub">murah meriah kok</div>
+  </div>
+
+  <button class="buy-btn" onclick="window.open('https://lynk.id/the_40_reset','_blank')">
+    BELI DI THE 40 RESET →
+  </button>
+
+  <div class="divider"></div>
+  <div class="already">Sudah beli? Masukkan kode akses kamu</div>
+
+  <input type="text" class="code-input" id="codeInput"
+    placeholder="KODE AKSES"
+    maxlength="10"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="characters"
+    spellcheck="false">
+
+  <div class="lock-err" id="lockErr"></div>
+
+  <button class="enter-btn" onclick="checkCode()">MASUK →</button>
+
+  <div class="don-box">
+    <p>❤️ Setiap penjualan — <b>10% langsung disumbangkan</b> ke yayasan yang membutuhkan.</p>
+    <span>Bukan janji. Gue share buktinya setiap bulan.</span>
+  </div>
 </div>
-<div id="wrap"><canvas id="c"></canvas></div>
+
+<!-- GAME -->
+<div id="gameWrap">
+<canvas id="c"></canvas>
+</div>
+
 <script>
+const CODE='MYBOSS';
+
+function checkCode(){
+  const v=document.getElementById('codeInput').value.toUpperCase().trim().replace(/[^A-Z0-9]/g,'');
+  if(v===CODE){
+    document.getElementById('lockScreen').style.display='none';
+    document.getElementById('gameWrap').style.display='block';
+    initGame();
+  } else {
+    document.getElementById('lockErr').textContent='Kode salah. Beli dulu di The 40 Reset.';
+    document.getElementById('codeInput').value='';
+    setTimeout(()=>document.getElementById('lockErr').textContent='',3000);
+  }
+}
+document.getElementById('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkCode();});
+
+// ═══════════════════════
+// GAME ENGINE
+// ═══════════════════════
 const c=document.getElementById('c');
 const ctx=c.getContext('2d');
 let W,H;
-function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
-resize();
-window.addEventListener('resize',resize);
+function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
 
-// STATE: splash -> lock -> charselect -> levelstory -> playing -> dead
 let STATE='splash';
 let selectedChar='male';
 let gameTime=0,score=0;
-let bestScore=parseInt(localStorage.getItem('stb_best3')||'0');
-let bgOffset=0,animFrame,lastTime=0;
+let bestScore=parseInt(localStorage.getItem('stb_best4')||'0');
+let bgOffset=0,lastTime=0;
 let currentLevel=1,lastLevelShown=1;
 let milestoneShown={},milestoneMsg='',milestoneTimer=0;
 let levelStoryTimer=0,levelStoryDuration=3.5;
-let particles=[],projs=[];
-let spawnTimer=0;
-let lockErr='',lockErrTimer=0;
-let lockInput='';
-let lockCursor=true,lockCursorTimer=0;
+let particles=[],projs=[],spawnTimer=0;
 let splashAnim=0;
 
-const CODE='MYBOSS';
-
-const P={x:0,y:0,vy:0,gravity:0.55,jumpForce:-13,w:30,h:42,rot:0,trail:[]};
-const BOSS={x:0,y:0,anger:0,throwAnim:0};
+const P={x:0,y:0,vy:0,gravity:0.45,jumpForce:-11,w:28,h:38,rot:0,trail:[]};
+const BOSS={anger:0,throwAnim:0};
 
 const LEVELS=[
-  {n:1,name:'PAPER STORM',story:['Monday morning.','Your boss found 47 things wrong','with your Friday report.','Dodge the papers. Good luck.'],obj:'PAPER',color:'#F0F0F0',w:34,h:22,rate:0.8,count:1,speed:5},
-  {n:2,name:'EMAIL TSUNAMI',story:['9 AM. 23 unread emails.','All marked URGENT.','All from your boss.','Your inbox is a weapon now.'],obj:'EMAIL',color:'#4A90D9',w:36,h:24,rate:0.6,count:1,speed:6.2},
-  {n:3,name:'FOLDER FRENZY',story:['Your boss just dumped','3 new projects on you.','All due tomorrow.','You never agreed to this.'],obj:'FOLDER',color:'#EF9F27',w:40,h:28,rate:0.45,count:2,speed:7},
-  {n:4,name:'REPORT RAGE',story:['End of quarter.','Full report needed. In 2 hours.','You had no data.','He does not care.'],obj:'REPORT',color:'#E05555',w:38,h:26,rate:0.33,count:2,speed:8},
-  {n:5,name:'EXCEL HELL',story:["Your boss can't do pivot tables.","You can. So it's your problem.","300 rows. Wrong formulas.","Due in 30 minutes."],obj:'EXCEL',color:'#1D9E75',w:40,h:28,rate:0.24,count:3,speed:9.5},
-  {n:6,name:'TOTAL CHAOS',story:['Your boss has lost his mind.','Everything is flying now.','Papers. Folders. Laptops.','There is no escape.'],obj:'CHAOS',color:'#9B59B6',w:42,h:30,rate:0.14,count:4,speed:11.5},
+  {n:1,name:'PAPER STORM',story:['Monday morning.','Your boss found 47 things wrong','with your Friday report.'],obj:'PAPER',color:'#F0F0F0',w:32,h:20,rate:0.8,count:1,speed:4.5},
+  {n:2,name:'EMAIL TSUNAMI',story:['9 AM. 23 unread emails.','All marked URGENT.','All from your boss.'],obj:'EMAIL',color:'#4A90D9',w:34,h:22,rate:0.6,count:1,speed:5.5},
+  {n:3,name:'FOLDER FRENZY',story:['3 new projects dumped on you.','All due tomorrow.','You never agreed to this.'],obj:'FOLDER',color:'#EF9F27',w:36,h:24,rate:0.44,count:2,speed:6.5},
+  {n:4,name:'REPORT RAGE',story:['Full report needed.','In 2 hours.','You had no data.'],obj:'REPORT',color:'#E05555',w:34,h:22,rate:0.32,count:2,speed:7.5},
+  {n:5,name:'EXCEL HELL',story:["Can't do pivot tables?","Your problem now.","300 rows. 30 minutes."],obj:'EXCEL',color:'#1D9E75',w:36,h:24,rate:0.22,count:3,speed:9},
+  {n:6,name:'TOTAL CHAOS',story:['Your boss has lost his mind.','Everything is flying now.','There is no escape.'],obj:'CHAOS',color:'#9B59B6',w:38,h:26,rate:0.13,count:4,speed:11},
 ];
 
 const CHAOS_DATA=[
-  {color:'#F0F0F0',name:'PAPER',w:34,h:22},
-  {color:'#4A90D9',name:'EMAIL',w:36,h:24},
-  {color:'#EF9F27',name:'FOLDER',w:40,h:28},
-  {color:'#E05555',name:'REPORT',w:38,h:26},
-  {color:'#1D9E75',name:'EXCEL',w:40,h:28},
-  {color:'#C9A84C',name:'CASE',w:38,h:26},
-  {color:'#FF6B6B',name:'PROJECT',w:40,h:28},
-  {color:'#444',name:'LAPTOP',w:44,h:28},
+  {color:'#F0F0F0',name:'PAPER',w:32,h:20},{color:'#4A90D9',name:'EMAIL',w:34,h:22},
+  {color:'#EF9F27',name:'FOLDER',w:36,h:24},{color:'#E05555',name:'REPORT',w:34,h:22},
+  {color:'#1D9E75',name:'EXCEL',w:36,h:24},{color:'#C9A84C',name:'CASE',w:34,h:22},
+  {color:'#FF6B6B',name:'PROJECT',w:36,h:24},{color:'#444',name:'LAPTOP',w:40,h:24},
 ];
 
 const MILESTONES=[
@@ -86,60 +172,59 @@ const MILESTONES=[
   {t:300,msg:'YOU ARE A PRO. You can dodge anything.'},
 ];
 
-// ═══════════════ PIXEL ART ═══════════════
 function drawChar(cx,x,y,female,panic,s){
   cx.save();cx.translate(x,y);
   const sk='#F4C27F';
   if(!female){
-    cx.fillStyle='#111';cx.fillRect(-8*s,16*s,7*s,5*s);cx.fillRect(2*s,16*s,7*s,5*s);
-    cx.fillStyle='#1a1a3a';cx.fillRect(-8*s,2*s,16*s,16*s);
-    cx.fillStyle='#FFFFFF';cx.fillRect(-9*s,-10*s,18*s,14*s);
-    cx.fillStyle='#C9A84C';cx.fillRect(-2*s,-10*s,4*s,12*s);
-    cx.fillStyle=sk;cx.fillRect(-8*s,-26*s,16*s,17*s);
-    cx.fillStyle='#3a2510';cx.fillRect(-8*s,-26*s,16*s,5*s);
+    cx.fillStyle='#111';cx.fillRect(-7*s,14*s,6*s,5*s);cx.fillRect(2*s,14*s,6*s,5*s);
+    cx.fillStyle='#1a1a3a';cx.fillRect(-7*s,1*s,14*s,14*s);
+    cx.fillStyle='#FFF';cx.fillRect(-8*s,-9*s,16*s,12*s);
+    cx.fillStyle='#C9A84C';cx.fillRect(-2*s,-9*s,4*s,10*s);
+    cx.fillStyle=sk;cx.fillRect(-7*s,-23*s,14*s,15*s);
+    cx.fillStyle='#3a2510';cx.fillRect(-7*s,-23*s,14*s,5*s);
   } else {
-    cx.fillStyle='#111';cx.fillRect(-7*s,16*s,6*s,5*s);cx.fillRect(2*s,16*s,6*s,5*s);
-    cx.fillStyle='#1a1a3a';cx.fillRect(-9*s,2*s,18*s,16*s);
-    cx.fillStyle='#C9A84C';cx.fillRect(-9*s,-10*s,18*s,14*s);
-    cx.fillStyle='#0A0A0F';cx.fillRect(-1*s,-10*s,2*s,14*s);
-    cx.fillStyle=sk;cx.fillRect(-8*s,-26*s,16*s,17*s);
-    cx.fillStyle='#1a0808';cx.fillRect(-9*s,-28*s,18*s,7*s);
-    cx.fillRect(-10*s,-22*s,4*s,16*s);cx.fillRect(7*s,-22*s,4*s,16*s);
+    cx.fillStyle='#111';cx.fillRect(-6*s,14*s,5*s,5*s);cx.fillRect(2*s,14*s,5*s,5*s);
+    cx.fillStyle='#1a1a3a';cx.fillRect(-8*s,1*s,16*s,14*s);
+    cx.fillStyle='#C9A84C';cx.fillRect(-8*s,-9*s,16*s,12*s);
+    cx.fillStyle='#0A0A0F';cx.fillRect(-1*s,-9*s,2*s,12*s);
+    cx.fillStyle=sk;cx.fillRect(-7*s,-23*s,14*s,15*s);
+    cx.fillStyle='#1a0808';cx.fillRect(-8*s,-25*s,16*s,6*s);
+    cx.fillRect(-9*s,-20*s,4*s,14*s);cx.fillRect(6*s,-20*s,4*s,14*s);
   }
   if(panic){
-    cx.fillStyle='#fff';cx.fillRect(-6*s,-18*s,4*s,5*s);cx.fillRect(2*s,-18*s,4*s,5*s);
-    cx.fillStyle='#000';cx.fillRect(-5*s,-17*s,2*s,3*s);cx.fillRect(3*s,-17*s,2*s,3*s);
-    cx.fillStyle='#E05555';cx.fillRect(-4*s,-11*s,8*s,3*s);
+    cx.fillStyle='#fff';cx.fillRect(-5*s,-16*s,4*s,5*s);cx.fillRect(2*s,-16*s,4*s,5*s);
+    cx.fillStyle='#000';cx.fillRect(-4*s,-15*s,2*s,3*s);cx.fillRect(3*s,-15*s,2*s,3*s);
+    cx.fillStyle='#E05555';cx.fillRect(-3*s,-10*s,7*s,3*s);
   } else {
-    cx.fillStyle='#000';cx.fillRect(-6*s,-18*s,4*s,4*s);cx.fillRect(2*s,-18*s,4*s,4*s);
-    cx.fillStyle='#c87a4a';cx.fillRect(-4*s,-11*s,8*s,3*s);
+    cx.fillStyle='#000';cx.fillRect(-5*s,-16*s,4*s,4*s);cx.fillRect(2*s,-16*s,4*s,4*s);
+    cx.fillStyle='#c87a4a';cx.fillRect(-3*s,-10*s,7*s,3*s);
   }
   cx.restore();
 }
 
 function drawBoss(cx,x,y,anger,throwing){
   cx.save();cx.translate(x,y);
-  const s=1.3;
+  const s=Math.min(W,H)/420;
   const face=anger>0.7?'#FF3333':anger>0.4?'#FF6644':'#F4A460';
   const suit=anger>0.7?'#5a0000':anger>0.4?'#7a1111':'#111133';
-  cx.fillStyle=suit;cx.fillRect(-18*s,-8*s,36*s,50*s);
-  cx.fillStyle='#fff';cx.fillRect(-8*s,-8*s,16*s,28*s);
-  cx.fillStyle='#E05555';cx.fillRect(-3*s,-8*s,6*s,20*s);
-  cx.fillStyle=face;cx.fillRect(-16*s,-48*s,32*s,42*s);
-  cx.fillStyle='#1a0a00';cx.fillRect(-16*s,-48*s,32*s,7*s);
-  cx.fillRect(-16*s,-41*s,5*s,28*s);cx.fillRect(11*s,-41*s,5*s,28*s);
-  if(anger>0.3){cx.fillStyle='#1a0a00';cx.fillRect(-13*s,-34*s,10*s,4*s);cx.fillRect(3*s,-34*s,10*s,4*s);}
-  cx.fillStyle='#111';cx.fillRect(-12*s,-28*s,7*s,7*s);cx.fillRect(5*s,-28*s,7*s,7*s);
-  cx.fillStyle='#fff';cx.fillRect(-11*s,-27*s,3*s,3*s);cx.fillRect(6*s,-27*s,3*s,3*s);
+  cx.fillStyle=suit;cx.fillRect(-14*s,-6*s,28*s,40*s);
+  cx.fillStyle='#fff';cx.fillRect(-6*s,-6*s,12*s,22*s);
+  cx.fillStyle='#E05555';cx.fillRect(-2*s,-6*s,5*s,16*s);
+  cx.fillStyle=face;cx.fillRect(-12*s,-38*s,24*s,34*s);
+  cx.fillStyle='#1a0a00';cx.fillRect(-12*s,-38*s,24*s,6*s);
+  cx.fillRect(-12*s,-32*s,4*s,22*s);cx.fillRect(8*s,-32*s,4*s,22*s);
+  if(anger>0.3){cx.fillStyle='#1a0a00';cx.fillRect(-10*s,-27*s,8*s,3*s);cx.fillRect(2*s,-27*s,8*s,3*s);}
+  cx.fillStyle='#111';cx.fillRect(-9*s,-22*s,6*s,6*s);cx.fillRect(3*s,-22*s,6*s,6*s);
+  cx.fillStyle='#fff';cx.fillRect(-8*s,-21*s,3*s,3*s);cx.fillRect(4*s,-21*s,3*s,3*s);
   if(anger>0.5){
-    cx.fillStyle='#500';cx.fillRect(-10*s,-16*s,20*s,7*s);
-    cx.fillStyle='#fff';cx.fillRect(-8*s,-15*s,4*s,5*s);cx.fillRect(-1*s,-15*s,4*s,5*s);cx.fillRect(4*s,-15*s,4*s,5*s);
-  } else {cx.fillStyle='#c87a4a';cx.fillRect(-8*s,-16*s,16*s,4*s);}
-  if(throwing){cx.fillStyle=face;cx.fillRect(18*s,-20*s,10*s,8*s);cx.fillRect(26*s,-32*s,8*s,14*s);}
-  else{cx.fillStyle=face;cx.fillRect(18*s,-4*s,8*s,28*s);}
+    cx.fillStyle='#500';cx.fillRect(-8*s,-13*s,16*s,6*s);
+    cx.fillStyle='#fff';cx.fillRect(-6*s,-12*s,3*s,4*s);cx.fillRect(-1*s,-12*s,3*s,4*s);cx.fillRect(3*s,-12*s,3*s,4*s);
+  } else {cx.fillStyle='#c87a4a';cx.fillRect(-6*s,-13*s,12*s,4*s);}
+  if(throwing){cx.fillStyle=face;cx.fillRect(14*s,-16*s,8*s,6*s);cx.fillRect(20*s,-24*s,6*s,10*s);}
+  else{cx.fillStyle=face;cx.fillRect(14*s,-3*s,6*s,22*s);}
   if(anger>0.7){
-    cx.fillStyle='rgba(255,60,60,0.35)';
-    for(let i=0;i<4;i++){cx.beginPath();cx.arc(-18*s+i*10*s,-54*s,5+i*1.5,0,Math.PI*2);cx.fill();}
+    cx.fillStyle='rgba(255,60,60,0.3)';
+    for(let i=0;i<3;i++){cx.beginPath();cx.arc(-12*s+i*9*s,-42*s,4+i,0,Math.PI*2);cx.fill();}
   }
   cx.restore();
 }
@@ -148,8 +233,8 @@ function drawProj(cx,p){
   cx.save();cx.translate(p.x+p.w/2,p.y+p.h/2);cx.rotate(p.rot);
   cx.fillStyle='rgba(0,0,0,0.4)';cx.fillRect(-p.w/2+3,-p.h/2+3,p.w,p.h);
   cx.fillStyle=p.color;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-  cx.fillStyle='rgba(255,255,255,0.9)';
-  ctx.font=`bold ${Math.max(8,p.w/4.5)}px Courier New`;
+  cx.fillStyle='rgba(255,255,255,0.95)';
+  cx.font=`bold ${Math.max(7,p.w/5)}px Courier New`;
   cx.textAlign='center';cx.textBaseline='middle';
   cx.fillText(p.name,0,0);
   cx.restore();
@@ -157,25 +242,20 @@ function drawProj(cx,p){
 
 function drawBg(){
   ctx.fillStyle='#0A0A0F';ctx.fillRect(0,0,W,H);
-  const off=bgOffset%220;
-  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,W,H*0.15);
-  ctx.fillStyle='#0d0d18';ctx.fillRect(0,H*0.85,W,H*0.15);
-  for(let x=-off;x<W+220;x+=110){ctx.fillStyle='#111120';ctx.fillRect(x,H*0.85,108,H*0.15);}
-  ctx.fillStyle='#C9A84C';ctx.fillRect(0,H*0.85,W,2);ctx.fillRect(0,H*0.15,W,1);
-  for(let x=-off*0.4;x<W+300;x+=260){
-    ctx.fillStyle='#111825';ctx.fillRect(x+20,H*0.18,150,H*0.55);
-    ctx.fillStyle='rgba(74,144,217,0.07)';ctx.fillRect(x+22,H*0.19,146,H*0.53);
-    ctx.fillStyle='#1a1a2a';ctx.fillRect(x+93,H*0.19,4,H*0.53);ctx.fillRect(x+22,H*0.19+H*0.265,146,3);
-    ctx.fillStyle='rgba(201,168,76,0.07)';
-    for(let i=0;i<8;i++)ctx.fillRect(x+22,H*0.19+i*(H*0.53/8),146,H*0.53/8-1);
+  const off=bgOffset%180;
+  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,W,H*0.14);
+  ctx.fillStyle='#0d0d18';ctx.fillRect(0,H*0.86,W,H*0.14);
+  for(let x=-off;x<W+180;x+=90){ctx.fillStyle='#111120';ctx.fillRect(x,H*0.86,88,H*0.14);}
+  ctx.fillStyle='#C9A84C';ctx.fillRect(0,H*0.86,W,2);ctx.fillRect(0,H*0.14,W,1);
+  for(let x=-off*0.3;x<W+250;x+=200){
+    ctx.fillStyle='#111825';ctx.fillRect(x+10,H*0.17,120,H*0.56);
+    ctx.fillStyle='rgba(74,144,217,0.06)';ctx.fillRect(x+12,H*0.18,116,H*0.54);
+    ctx.fillStyle='#1a1a2a';ctx.fillRect(x+68,H*0.18,3,H*0.54);ctx.fillRect(x+12,H*0.18+H*0.27,116,2);
+    ctx.fillStyle='rgba(201,168,76,0.06)';
+    for(let i=0;i<7;i++)ctx.fillRect(x+12,H*0.18+i*(H*0.54/7),116,H*0.54/7-1);
   }
-  ctx.fillStyle='#181828';ctx.fillRect(0,H*0.72,W*0.2,H*0.13);
-  ctx.fillStyle='#222235';ctx.fillRect(0,H*0.70,W*0.2,H*0.035);
-  ctx.fillStyle='#0d0d1a';ctx.fillRect(W*0.04,H*0.52,W*0.12,H*0.2);
-  ctx.fillStyle='rgba(74,144,217,0.2)';ctx.fillRect(W*0.045,H*0.525,W*0.11,H*0.185);
 }
 
-// ═══════════════ SPAWN ═══════════════
 function getLvl(){return LEVELS[Math.min(currentLevel-1,LEVELS.length-1)];}
 
 function spawnProj(){
@@ -184,34 +264,26 @@ function spawnProj(){
   for(let i=0;i<count;i++){
     let color,name,pw,ph;
     if(lvl.obj==='CHAOS'){
-      const ci=Math.floor(Math.random()*CHAOS_DATA.length);
-      const cd=CHAOS_DATA[ci];color=cd.color;name=cd.name;pw=cd.w;ph=cd.h;
+      const cd=CHAOS_DATA[Math.floor(Math.random()*CHAOS_DATA.length)];
+      color=cd.color;name=cd.name;pw=cd.w;ph=cd.h;
     } else {color=lvl.color;name=lvl.obj;pw=lvl.w;ph=lvl.h;}
-    const top=H*0.17,bot=H*0.84-ph;
+    const top=H*0.16,bot=H*0.85-ph;
     const spread=(bot-top)/Math.max(count,1);
     const y=top+i*spread+Math.random()*spread*0.7;
-    projs.push({x:W+20,y,w:pw,h:ph,vx:-(lvl.speed+Math.random()*2),vy:(Math.random()-0.5)*2.5,rot:0,rotSpeed:(Math.random()-0.5)*0.2,color,name});
+    projs.push({x:W+20,y,w:pw,h:ph,vx:-(lvl.speed+Math.random()*1.5),vy:(Math.random()-0.5)*2,rot:0,rotSpeed:(Math.random()-0.5)*0.18,color,name});
   }
   BOSS.throwAnim=0.4;
 }
 
 function checkHit(p){
-  const m=7,px=P.x-P.w/2+m,py=P.y-P.h/2+m,pw=P.w-m*2,ph=P.h-m*2;
+  const m=6,px=P.x-P.w/2+m,py=P.y-P.h/2+m,pw=P.w-m*2,ph=P.h-m*2;
   return!(px+pw<p.x||px>p.x+p.w||py+ph<p.y||py>p.y+p.h);
 }
 
-// ═══════════════ UPDATE ═══════════════
 function update(dt){
-  splashAnim+=dt;
-  bgOffset+=2;
-  if(lockErrTimer>0)lockErrTimer-=dt;
-  lockCursorTimer+=dt;if(lockCursorTimer>0.5){lockCursor=!lockCursor;lockCursorTimer=0;}
-
-  if(STATE==='levelstory'){
-    levelStoryTimer-=dt;if(levelStoryTimer<=0)STATE='playing';return;
-  }
+  splashAnim+=dt;bgOffset+=1.5;
+  if(STATE==='levelstory'){levelStoryTimer-=dt;if(levelStoryTimer<=0)STATE='playing';return;}
   if(STATE!=='playing')return;
-
   gameTime+=dt;score=Math.floor(gameTime);
   const newLvl=score<30?1:score<60?2:score<90?3:score<120?4:score<150?5:6;
   if(newLvl!==currentLevel&&newLvl>lastLevelShown){
@@ -220,33 +292,29 @@ function update(dt){
   }
   BOSS.anger=Math.min(gameTime/180,1);
   if(BOSS.throwAnim>0)BOSS.throwAnim-=dt*3;
-
   P.vy+=P.gravity;P.y+=P.vy;
-  P.rot=Math.max(-0.5,Math.min(0.5,P.vy*0.035));
-  const top=H*0.16+P.h/2,bot=H*0.85-P.h/2;
-  if(P.y<top){P.y=top;P.vy=2;}
+  P.rot=Math.max(-0.4,Math.min(0.4,P.vy*0.03));
+  const top=H*0.15+P.h/2,bot=H*0.86-P.h/2;
+  if(P.y<top){P.y=top;P.vy=1.5;}
   if(P.y>bot){P.y=bot;P.vy=0;}
-  P.trail.push({x:P.x,y:P.y,a:0.35});
-  if(P.trail.length>8)P.trail.shift();
+  P.trail.push({x:P.x,y:P.y,a:0.3});
+  if(P.trail.length>7)P.trail.shift();
   P.trail.forEach(t=>t.a-=0.05);
-
   spawnTimer-=dt;
-  if(spawnTimer<=0){spawnProj();const lvl=getLvl();spawnTimer=lvl.rate+Math.random()*lvl.rate*0.25;}
-
+  if(spawnTimer<=0){spawnProj();const lvl=getLvl();spawnTimer=lvl.rate+Math.random()*lvl.rate*0.2;}
   for(let i=projs.length-1;i>=0;i--){
-    const p=projs[i];
-    p.x+=p.vx;p.y+=p.vy;p.rot+=p.rotSpeed;
-    if(p.y<H*0.16||p.y+p.h>H*0.85)p.vy*=-0.7;
+    const p=projs[i];p.x+=p.vx;p.y+=p.vy;p.rot+=p.rotSpeed;
+    if(p.y<H*0.15||p.y+p.h>H*0.86)p.vy*=-0.7;
     if(p.x+p.w<0){projs.splice(i,1);continue;}
     if(checkHit(p)){
-      for(let j=0;j<14;j++)particles.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*10,vy:(Math.random()-0.5)*10,life:1,color:p.color});
+      for(let j=0;j<12;j++)particles.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*9,vy:(Math.random()-0.5)*9,life:1,color:p.color});
       STATE='dead';
-      if(score>bestScore){bestScore=score;localStorage.setItem('stb_best3',bestScore);}
+      if(score>bestScore){bestScore=score;localStorage.setItem('stb_best4',bestScore);}
       return;
     }
   }
   for(let i=particles.length-1;i>=0;i--){
-    const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.3;p.life-=0.05;
+    const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.25;p.life-=0.05;
     if(p.life<=0)particles.splice(i,1);
   }
   MILESTONES.forEach(m=>{
@@ -255,215 +323,124 @@ function update(dt){
   if(milestoneTimer>0)milestoneTimer-=dt;
 }
 
-// ═══════════════ DRAW SCREENS ═══════════════
-function txt(text,x,y,size,color,align='center',bold=false){
-  ctx.fillStyle=color;
-  ctx.font=`${bold?'900':'500'} ${size}px Courier New`;
-  ctx.textAlign=align;ctx.textBaseline='middle';
-  ctx.fillText(text,x,y);
-}
-
-function donationBox(y){
-  const bw=W*0.58,bh=H*0.11,bx=W/2-bw/2;
-  ctx.fillStyle='rgba(201,168,76,0.08)';ctx.fillRect(bx,y,bw,bh);
-  ctx.strokeStyle='rgba(201,168,76,0.4)';ctx.lineWidth=1.5;ctx.strokeRect(bx,y,bw,bh);
-  ctx.fillStyle='#fff';
-  ctx.font=`${H*0.027}px Courier New`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('\u2764\ufe0f  Setiap penjualan \u2014 10% langsung disumbangkan',W/2,y+bh*0.33);
-  ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.023}px Courier New`;
-  ctx.fillText('ke yayasan yang membutuhkan. Bukan janji.',W/2,y+bh*0.72);
-}
+function fs(size){return Math.max(size*0.7, Math.min(size, size*(Math.min(W,H)/400)));}
 
 function drawSplash(){
-  ctx.fillStyle='rgba(10,10,15,0.95)';ctx.fillRect(0,0,W,H);
-  // BIG TITLE
+  ctx.fillStyle='rgba(10,10,15,0.94)';ctx.fillRect(0,0,W,H);
   ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.18}px Courier New`;
+  ctx.font=`900 ${fs(H*0.16)}px Courier New`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('SURVIVE',W/2,H*0.2);
-  ctx.fillText('YOUR BOSS',W/2,H*0.41);
-  // tagline
+  ctx.fillText('SURVIVE',W/2,H*0.18);
+  ctx.fillText('YOUR BOSS',W/2,H*0.36);
   ctx.fillStyle='#fff';
-  ctx.font=`${H*0.042}px Courier New`;
-  ctx.fillText("They won't stop. Neither should you.",W/2,H*0.56);
-  // story
+  ctx.font=`${fs(H*0.038)}px Courier New`;
+  ctx.fillText("They won't stop. Neither should you.",W/2,H*0.52);
   ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.032}px Courier New`;
-  ctx.fillText('Every office has a boss who never stops.',W/2,H*0.62);
-  ctx.fillText('The deadlines. The emails. The chaos.',W/2,H*0.68);
-  ctx.fillText('This game will not fix your boss.',W/2,H*0.74);
+  ctx.font=`${fs(H*0.03)}px Courier New`;
+  ctx.fillText('Every office has a boss who never stops.',W/2,H*0.61);
+  ctx.fillText('The deadlines. The emails. The chaos.',W/2,H*0.67);
   ctx.fillStyle='#C9A84C';
-  ctx.fillText('But dodging them feels really good.',W/2,H*0.80);
-  // donation box
-  donationBox(H*0.855);
-  // TAP — below donation box, no overlap
-  const pulse=0.7+0.3*Math.sin(splashAnim*3);
-  ctx.globalAlpha=pulse;
-  ctx.fillStyle='#fff';
-  ctx.font=`bold ${H*0.036}px Courier New`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('TAP ANYWHERE TO CONTINUE',W/2,H*0.965);
+  ctx.fillText('But dodging them feels really good.',W/2,H*0.73);
+  // donation
+  const dw=W*0.85,dh=H*0.1,dx=W/2-dw/2,dy=H*0.79;
+  ctx.fillStyle='rgba(201,168,76,0.08)';ctx.fillRect(dx,dy,dw,dh);
+  ctx.strokeStyle='rgba(201,168,76,0.4)';ctx.lineWidth=1.5;ctx.strokeRect(dx,dy,dw,dh);
+  ctx.fillStyle='#fff';ctx.font=`${fs(H*0.026)}px Courier New`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('\u2764\ufe0f  Setiap penjualan — 10% langsung disumbangkan ke yayasan.',W/2,dy+dh*0.38);
+  ctx.fillStyle='#AAAABC';ctx.font=`${fs(H*0.022)}px Courier New`;
+  ctx.fillText('Bukan janji. Gue share buktinya setiap bulan.',W/2,dy+dh*0.72);
+  // tap
+  const pulse=0.6+0.4*Math.sin(splashAnim*3);
+  ctx.globalAlpha=pulse;ctx.fillStyle='#fff';
+  ctx.font=`bold ${fs(H*0.034)}px Courier New`;
+  ctx.fillText('TAP UNTUK LANJUT',W/2,H*0.945);
   ctx.globalAlpha=1;
-}
-
-function drawLock(){
-  ctx.fillStyle='rgba(10,10,15,0.97)';ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.08}px Courier New`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('SURVIVE YOUR BOSS',W/2,H*0.12);
-  // price box
-  const pw=W*0.35,ph=H*0.18,px=W/2-pw/2,py=H*0.2;
-  ctx.fillStyle='rgba(201,168,76,0.1)';ctx.fillRect(px,py,pw,ph);
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=2;ctx.strokeRect(px,py,pw,ph);
-  ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.07}px Courier New`;
-  ctx.fillText('Rp 15.000',W/2,py+ph*0.35);
-  ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.03}px Courier New`;
-  ctx.fillText('murah meriah kok',W/2,py+ph*0.7);
-  // buy button
-  const btnW=W*0.3,btnH=H*0.09,btnX=W/2-btnW/2,btnY=H*0.43;
-  ctx.fillStyle='#C9A84C';ctx.fillRect(btnX,btnY,btnW,btnH);
-  ctx.fillStyle='#0A0A0F';
-  ctx.font=`bold ${H*0.038}px Courier New`;
-  ctx.fillText('BELI DI THE 40 RESET',W/2,btnY+btnH/2);
-  // divider
-  ctx.fillStyle='#2A2A3A';ctx.fillRect(W*0.2,H*0.57,W*0.6,1);
-  ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.027}px Courier New`;
-  ctx.fillText('Sudah beli? Masukkan kode akses kamu',W/2,H*0.62);
-  // input box
-  const iw=W*0.4,ih=H*0.1,ix=W/2-iw/2,iy=H*0.66;
-  ctx.fillStyle='#111118';ctx.fillRect(ix,iy,iw,ih);
-  ctx.strokeStyle=lockErr?'#E05555':'#2A2A3A';ctx.lineWidth=2;ctx.strokeRect(ix,iy,iw,ih);
-  const display=lockInput+(lockCursor&&lockInput.length<10?'_':'');
-  ctx.fillStyle='#fff';
-  ctx.font=`bold ${H*0.05}px Courier New`;
-  ctx.letterSpacing='0.2em';
-  ctx.fillText(display||'KODE AKSES',W/2,iy+ih/2);
-  ctx.letterSpacing='0';
-  if(lockErr){
-    ctx.fillStyle='#E05555';
-    ctx.font=`${H*0.027}px Courier New`;
-    ctx.fillText(lockErr,W/2,H*0.8);
-  }
-  // enter button
-  const eb_w=W*0.2,eb_h=H*0.08,eb_x=W/2-eb_w/2,eb_y=H*0.82;
-  ctx.fillStyle=lockInput.length>0?'#C9A84C':'#2A2A3A';
-  ctx.fillRect(eb_x,eb_y,eb_w,eb_h);
-  ctx.fillStyle=lockInput.length>0?'#0A0A0F':'#AAAABC';
-  ctx.font=`bold ${H*0.034}px Courier New`;
-  ctx.fillText('MASUK →',W/2,eb_y+eb_h/2);
-  // keyboard hint
-  ctx.fillStyle='rgba(170,170,188,0.5)';
-  ctx.font=`${H*0.022}px Courier New`;
-  ctx.fillText('Ketik kode → Enter / tap MASUK',W/2,H*0.93);
 }
 
 function drawCharSelect(){
   ctx.fillStyle='rgba(10,10,15,0.95)';ctx.fillRect(0,0,W,H);
   ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.1}px Courier New`;
+  ctx.font=`900 ${fs(H*0.085)}px Courier New`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText('SURVIVE YOUR BOSS',W/2,H*0.1);
   ctx.fillStyle='#fff';
-  ctx.font=`${H*0.05}px Courier New`;
+  ctx.font=`${fs(H*0.048)}px Courier New`;
   ctx.fillText('Who are you today?',W/2,H*0.22);
   ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.033}px Courier New`;
+  ctx.font=`${fs(H*0.03)}px Courier New`;
   ctx.fillText('Choose your character. Then survive.',W/2,H*0.3);
-
-  const scale=H/280;
-  const my=H*0.6,mx=W/2-H*0.2,fx=W/2+H*0.2;
-  const bw=H*0.22,bh=H*0.28;
-
+  const scale=Math.min(W,H)/320;
+  const isLandscape=W>H;
+  const my=isLandscape?H*0.62:H*0.6;
+  const mx=isLandscape?W/2-H*0.18:W/2-W*0.22;
+  const fx=isLandscape?W/2+H*0.18:W/2+W*0.22;
+  const bw=isLandscape?H*0.2:W*0.36,bh=isLandscape?H*0.3:H*0.28;
   // Male
-  ctx.fillStyle=selectedChar==='male'?'rgba(201,168,76,0.15)':'rgba(255,255,255,0.03)';
+  ctx.fillStyle=selectedChar==='male'?'rgba(201,168,76,0.15)':'rgba(255,255,255,0.04)';
   ctx.fillRect(mx-bw/2,my-bh/2,bw,bh);
-  ctx.strokeStyle=selectedChar==='male'?'#C9A84C':'#2A2A3A';
-  ctx.lineWidth=2;ctx.strokeRect(mx-bw/2,my-bh/2,bw,bh);
-  drawChar(ctx,mx,my-H*0.02,false,false,scale);
+  ctx.strokeStyle=selectedChar==='male'?'#C9A84C':'#2A2A3A';ctx.lineWidth=2;
+  ctx.strokeRect(mx-bw/2,my-bh/2,bw,bh);
+  drawChar(ctx,mx,my-bh*0.06,false,false,scale*0.9);
   ctx.fillStyle=selectedChar==='male'?'#C9A84C':'#AAAABC';
-  ctx.font=`bold ${H*0.038}px Courier New`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('HIM',mx,my+bh/2-H*0.04);
-
+  ctx.font=`bold ${fs(H*0.036)}px Courier New`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('HIM',mx,my+bh*0.42);
   // Female
-  ctx.fillStyle=selectedChar==='female'?'rgba(201,168,76,0.15)':'rgba(255,255,255,0.03)';
+  ctx.fillStyle=selectedChar==='female'?'rgba(201,168,76,0.15)':'rgba(255,255,255,0.04)';
   ctx.fillRect(fx-bw/2,my-bh/2,bw,bh);
   ctx.strokeStyle=selectedChar==='female'?'#C9A84C':'#2A2A3A';
   ctx.strokeRect(fx-bw/2,my-bh/2,bw,bh);
-  drawChar(ctx,fx,my-H*0.02,true,false,scale);
+  drawChar(ctx,fx,my-bh*0.06,true,false,scale*0.9);
   ctx.fillStyle=selectedChar==='female'?'#C9A84C':'#AAAABC';
-  ctx.fillText('HER',fx,my+bh/2-H*0.04);
-
-  // start btn
-  const sb_w=W*0.25,sb_h=H*0.1,sb_x=W/2-sb_w/2,sb_y=H*0.87;
+  ctx.fillText('HER',fx,my+bh*0.42);
+  // play button
+  const sb_w=W*0.55,sb_h=H*0.1,sb_x=W/2-sb_w/2,sb_y=H*0.87;
   ctx.fillStyle='#C9A84C';ctx.fillRect(sb_x,sb_y,sb_w,sb_h);
-  ctx.fillStyle='#0A0A0F';
-  ctx.font=`bold ${H*0.042}px Courier New`;
+  ctx.fillStyle='#0A0A0F';ctx.font=`900 ${fs(H*0.042)}px Courier New`;
   ctx.fillText('PLAY →',W/2,sb_y+sb_h/2);
 }
 
 function drawLevelStory(){
-  ctx.fillStyle='rgba(10,10,15,0.9)';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,10,15,0.88)';ctx.fillRect(0,0,W,H);
   const lvl=getLvl();
-  ctx.fillStyle='rgba(201,168,76,0.15)';
-  ctx.fillRect(W*0.1,H*0.08,W*0.8,H*0.84);
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=2;
-  ctx.strokeRect(W*0.1,H*0.08,W*0.8,H*0.84);
-
-  ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.07}px Courier New`;
+  const bx=W*0.06,by=H*0.08,bw=W*0.88,bh=H*0.84;
+  ctx.fillStyle='rgba(201,168,76,0.1)';ctx.fillRect(bx,by,bw,bh);
+  ctx.strokeStyle='#C9A84C';ctx.lineWidth=2;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='#C9A84C';ctx.font=`900 ${fs(H*0.07)}px Courier New`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('LEVEL '+lvl.n,W/2,H*0.19);
-
-  ctx.fillStyle='#fff';
-  ctx.font=`bold ${H*0.065}px Courier New`;
-  ctx.fillText(lvl.name,W/2,H*0.31);
-
-  ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.038}px Courier New`;
-  lvl.story.forEach((line,i)=>ctx.fillText(line,W/2,H*0.46+i*H*0.09));
-
+  ctx.fillText('LEVEL '+lvl.n,W/2,H*0.22);
+  ctx.fillStyle='#fff';ctx.font=`bold ${fs(H*0.06)}px Courier New`;
+  ctx.fillText(lvl.name,W/2,H*0.35);
+  ctx.fillStyle='#AAAABC';ctx.font=`${fs(H*0.036)}px Courier New`;
+  lvl.story.forEach((line,i)=>ctx.fillText(line,W/2,H*0.5+i*H*0.1));
   const pct=1-levelStoryTimer/levelStoryDuration;
-  ctx.fillStyle='rgba(201,168,76,0.2)';ctx.fillRect(W*0.2,H*0.88,W*0.6,8);
-  ctx.fillStyle='#C9A84C';ctx.fillRect(W*0.2,H*0.88,W*0.6*pct,8);
-  ctx.fillStyle='#AAAABC';
-  ctx.font=`${H*0.032}px Courier New`;
+  ctx.fillStyle='rgba(201,168,76,0.2)';ctx.fillRect(W*0.15,H*0.88,W*0.7,6);
+  ctx.fillStyle='#C9A84C';ctx.fillRect(W*0.15,H*0.88,W*0.7*pct,6);
+  ctx.fillStyle='#AAAABC';ctx.font=`${fs(H*0.03)}px Courier New`;
   ctx.fillText('GET READY...',W/2,H*0.94);
 }
 
 function drawHUD(){
-  // score
-  ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.075}px Courier New`;
+  ctx.fillStyle='#C9A84C';ctx.font=`900 ${fs(H*0.07)}px Courier New`;
   ctx.textAlign='center';ctx.textBaseline='top';
   ctx.fillText(score+'s',W/2,H*0.015);
-  // level
   const lvl=getLvl();
-  ctx.fillStyle='rgba(201,168,76,0.8)';
-  ctx.font=`bold ${H*0.036}px Courier New`;
-  ctx.textAlign='left';
-  ctx.fillText('LVL '+currentLevel+' — '+lvl.name,W*0.02,H*0.018);
-  // anger bar
-  const bw=W*0.16,bh=H*0.032,bx=W-bw-W*0.02,by=H*0.018;
+  ctx.fillStyle='rgba(201,168,76,0.8)';ctx.font=`bold ${fs(H*0.033)}px Courier New`;
+  ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.fillText('LVL '+currentLevel+' — '+lvl.name,W*0.02,H*0.016);
+  const bw=W*0.18,bh=H*0.03,bx=W-bw-W*0.02,by=H*0.018;
   ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(bx,by,bw,bh);
   const ac=BOSS.anger>0.7?'#E05555':BOSS.anger>0.4?'#EF9F27':'#1D9E75';
   ctx.fillStyle=ac;ctx.fillRect(bx,by,bw*BOSS.anger,bh);
   ctx.strokeStyle='#C9A84C';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
-  ctx.fillStyle='#fff';ctx.font=`bold ${H*0.022}px Courier New`;
+  ctx.fillStyle='#fff';ctx.font=`bold ${fs(H*0.02)}px Courier New`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText('BOSS ANGER',bx+bw/2,by+bh/2);
-  // milestone
   if(milestoneTimer>0){
     ctx.globalAlpha=Math.min(1,milestoneTimer*2);
-    const mw=W*0.55,mh=H*0.08,mx=W/2-mw/2,my=H*0.09;
-    ctx.fillStyle='rgba(0,0,0,0.8)';ctx.fillRect(mx,my,mw,mh);
-    ctx.strokeStyle='#C9A84C';ctx.lineWidth=1.5;ctx.strokeRect(mx,my,mw,mh);
-    ctx.fillStyle='#fff';ctx.font=`${H*0.03}px Courier New`;
+    const mw=W*0.82,mh=H*0.07,mx=W/2-mw/2,my=H*0.09;
+    ctx.fillStyle='rgba(0,0,0,0.85)';ctx.fillRect(mx,my,mw,mh);
+    ctx.strokeStyle='#C9A84C';ctx.lineWidth=1;ctx.strokeRect(mx,my,mw,mh);
+    ctx.fillStyle='#fff';ctx.font=`${fs(H*0.028)}px Courier New`;
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(milestoneMsg,W/2,my+mh/2);
     ctx.globalAlpha=1;
@@ -471,124 +448,103 @@ function drawHUD(){
 }
 
 function drawGameOver(){
-  ctx.fillStyle='rgba(10,10,15,0.92)';ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='#E05555';
-  ctx.font=`900 ${H*0.09}px Courier New`;
+  ctx.fillStyle='rgba(10,10,15,0.93)';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#E05555';ctx.font=`900 ${fs(H*0.085)}px Courier New`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText('OVERLOADED.',W/2,H*0.1);
-
   let msg=['Game Over. Your boss wins.','For now.'];
   if(score>=300)msg=['YOU ARE A PRO.','You can dodge anything.'];
   else if(score>=180)msg=['Legendary.','Your boss needs therapy.'];
   else if(score>=120)msg=['Your boss is impressed.','Will never admit it.'];
   else if(score>=60)msg=['Not bad.','Boss is mildly annoyed.'];
-
-  ctx.fillStyle='#AAAABC';ctx.font=`${H*0.032}px Courier New`;
+  ctx.fillStyle='#AAAABC';ctx.font=`${fs(H*0.032)}px Courier New`;
   msg.forEach((line,i)=>ctx.fillText(line,W/2,H*0.19+i*H*0.048));
-
-  // score big
-  ctx.fillStyle='#C9A84C';
-  ctx.font=`900 ${H*0.12}px Courier New`;
-  ctx.fillText(score+'s',W/2,H*0.36);
-  ctx.fillStyle='#AAAABC';ctx.font=`${H*0.028}px Courier New`;
-  ctx.fillText('BEST: '+bestScore+'s',W/2,H*0.44);
-
-  // donation box
-  donationBox(H*0.49);
-
-  // CTA — full width, clear text
-  const cy=H*0.62,ch=H*0.22,cpad=W*0.05;
-  ctx.fillStyle='#C9A84C';
-  ctx.fillRect(cpad,cy,W-cpad*2,ch);
+  ctx.fillStyle='#C9A84C';ctx.font=`900 ${fs(H*0.11)}px Courier New`;
+  ctx.fillText(score+'s',W/2,H*0.35);
+  ctx.fillStyle='#AAAABC';ctx.font=`${fs(H*0.027)}px Courier New`;
+  ctx.fillText('BEST: '+bestScore+'s',W/2,H*0.43);
+  // donation
+  const dw=W*0.88,dh=H*0.1,dx=W/2-dw/2,dy=H*0.49;
+  ctx.fillStyle='rgba(201,168,76,0.08)';ctx.fillRect(dx,dy,dw,dh);
+  ctx.strokeStyle='rgba(201,168,76,0.4)';ctx.lineWidth=1.5;ctx.strokeRect(dx,dy,dw,dh);
+  ctx.fillStyle='#fff';ctx.font=`${fs(H*0.026)}px Courier New`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('\u2764\ufe0f  Setiap penjualan — 10% langsung disumbangkan ke yayasan.',W/2,dy+dh*0.38);
+  ctx.fillStyle='#AAAABC';ctx.font=`${fs(H*0.022)}px Courier New`;
+  ctx.fillText('Bukan janji. Gue share buktinya setiap bulan.',W/2,dy+dh*0.72);
+  // CTA
+  const cy=H*0.62,ch=H*0.2,cpad=W*0.06;
+  ctx.fillStyle='#C9A84C';ctx.fillRect(cpad,cy,W-cpad*2,ch);
   ctx.fillStyle='#0A0A0F';
-  ctx.font=`900 ${H*0.048}px Courier New`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font=`900 ${fs(H*0.042)}px Courier New`;ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText('Kepikiran mau resign?',W/2,cy+ch*0.2);
-  ctx.font=`${H*0.03}px Courier New`;
-  ctx.fillText('Pastikan keputusanmu lahir dari kejernihan,',W/2,cy+ch*0.43);
+  ctx.font=`${fs(H*0.027)}px Courier New`;
+  ctx.fillText('Pastikan keputusanmu lahir dari kejernihan,',W/2,cy+ch*0.44);
   ctx.fillText('bukan dari kepanikan.',W/2,cy+ch*0.6);
-  ctx.font=`bold ${H*0.032}px Courier New`;
-  ctx.fillText('Cek kesiapan resign \u2192 The 40 Reset',W/2,cy+ch*0.8);
-
-  // retry + share — small, below CTA
-  const by2=H*0.87,bw2=W*0.18,bh2=H*0.08;
-  ctx.fillStyle='rgba(255,255,255,0.15)';
-  ctx.fillRect(W/2-bw2-W*0.02,by2,bw2,bh2);
-  ctx.strokeStyle='#fff';ctx.lineWidth=1.5;
-  ctx.strokeRect(W/2-bw2-W*0.02,by2,bw2,bh2);
-  ctx.fillStyle='#fff';ctx.font=`bold ${H*0.03}px Courier New`;
+  ctx.font=`bold ${fs(H*0.03)}px Courier New`;
+  ctx.fillText('Cek kesiapan resign \u2192 The 40 Reset',W/2,cy+ch*0.82);
+  // retry + share
+  const by2=H*0.855,bw2=W*0.36,bh2=H*0.08;
+  ctx.fillStyle='rgba(255,255,255,0.12)';ctx.fillRect(W/2-bw2-W*0.02,by2,bw2,bh2);
+  ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.strokeRect(W/2-bw2-W*0.02,by2,bw2,bh2);
+  ctx.fillStyle='#fff';ctx.font=`bold ${fs(H*0.03)}px Courier New`;
   ctx.fillText('RETRY',W/2-bw2/2-W*0.02,by2+bh2/2);
-
-  ctx.fillStyle='rgba(255,255,255,0.05)';
-  ctx.fillRect(W/2+W*0.02,by2,bw2,bh2);
+  ctx.fillStyle='rgba(255,255,255,0.05)';ctx.fillRect(W/2+W*0.02,by2,bw2,bh2);
   ctx.strokeRect(W/2+W*0.02,by2,bw2,bh2);
-  ctx.fillStyle='#fff';
-  ctx.fillText('SHARE',W/2+bw2/2+W*0.02,by2+bh2/2);
+  ctx.fillStyle='#fff';ctx.fillText('SHARE',W/2+bw2/2+W*0.02,by2+bh2/2);
+  ctx.fillStyle='rgba(170,170,188,0.4)';ctx.font=`${fs(H*0.02)}px Courier New`;
+  ctx.fillText('the40reset.github.io',W/2,H*0.965);
 }
 
-// ═══════════════ MAIN DRAW ═══════════════
 function draw(){
   drawBg();
   projs.forEach(p=>drawProj(ctx,p));
   particles.forEach(p=>{ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.fillRect(p.x-4,p.y-4,8,8);});
   ctx.globalAlpha=1;
-  P.trail.forEach(t=>{ctx.globalAlpha=Math.max(0,t.a);ctx.fillStyle='rgba(201,168,76,0.25)';ctx.fillRect(t.x-6,t.y-6,12,12);});
+  P.trail.forEach(t=>{ctx.globalAlpha=Math.max(0,t.a);ctx.fillStyle='rgba(201,168,76,0.2)';ctx.fillRect(t.x-5,t.y-5,10,10);});
   ctx.globalAlpha=1;
   if(STATE==='playing'||STATE==='dead'||STATE==='levelstory'){
     ctx.save();ctx.translate(P.x,P.y);ctx.rotate(P.rot);
-    drawChar(ctx,0,0,selectedChar==='female',Math.abs(P.vy)>7||STATE==='dead',H/380);
+    drawChar(ctx,0,0,selectedChar==='female',Math.abs(P.vy)>7||STATE==='dead',Math.min(W,H)/360);
     ctx.restore();
   }
-  // boss
-  const bs=H/600;
-  BOSS.x=W-80*bs;BOSS.y=H*0.16+50*bs;
-  drawBoss(ctx,BOSS.x,BOSS.y,BOSS.anger,BOSS.throwAnim>0.1);
-
-  if(STATE==='playing') drawHUD();
-  if(STATE==='splash') drawSplash();
-  else if(STATE==='lock') drawLock();
-  else if(STATE==='charselect') drawCharSelect();
-  else if(STATE==='levelstory') drawLevelStory();
-  else if(STATE==='dead') drawGameOver();
+  const bossX=W-Math.min(W,H)*0.15,bossY=H*0.16+Math.min(W,H)*0.12;
+  drawBoss(ctx,bossX,bossY,BOSS.anger,BOSS.throwAnim>0.1);
+  if(STATE==='playing')drawHUD();
+  if(STATE==='splash')drawSplash();
+  else if(STATE==='charselect')drawCharSelect();
+  else if(STATE==='levelstory')drawLevelStory();
+  else if(STATE==='dead')drawGameOver();
 }
 
-// ═══════════════ INPUT ═══════════════
 function handleTap(x,y){
-  if(STATE==='splash'){STATE='lock';return;}
-  if(STATE==='lock'){
-    // buy button
-    const btnW=W*0.3,btnH=H*0.09,btnX=W/2-btnW/2,btnY=H*0.43;
-    if(x>btnX&&x<btnX+btnW&&y>btnY&&y<btnY+btnH){
-      window.open('https://lynk.id/the_40_reset','_blank');return;
-    }
-    // enter button
-    const eb_w=W*0.2,eb_h=H*0.08,eb_x=W/2-eb_w/2,eb_y=H*0.82;
-    if(x>eb_x&&x<eb_x+eb_w&&y>eb_y&&y<eb_y+eb_h){checkCode();return;}
-    return;
-  }
+  if(STATE==='splash'){STATE='charselect';return;}
   if(STATE==='charselect'){
-    const my=H*0.6,mx=W/2-H*0.2,fx=W/2+H*0.2,bw=H*0.22,bh=H*0.28;
+    const isLandscape=W>H;
+    const my=isLandscape?H*0.62:H*0.6;
+    const mx=isLandscape?W/2-H*0.18:W/2-W*0.22;
+    const fx=isLandscape?W/2+H*0.18:W/2+W*0.22;
+    const bw=isLandscape?H*0.2:W*0.36,bh=isLandscape?H*0.3:H*0.28;
     if(x>mx-bw/2&&x<mx+bw/2&&y>my-bh/2&&y<my+bh/2){selectedChar='male';return;}
     if(x>fx-bw/2&&x<fx+bw/2&&y>my-bh/2&&y<my+bh/2){selectedChar='female';return;}
-    const sb_w=W*0.25,sb_h=H*0.1,sb_x=W/2-sb_w/2,sb_y=H*0.87;
+    const sb_w=W*0.55,sb_h=H*0.1,sb_x=W/2-sb_w/2,sb_y=H*0.87;
     if(x>sb_x&&x<sb_x+sb_w&&y>sb_y&&y<sb_y+sb_h){startGame();return;}
     return;
   }
   if(STATE==='playing'){P.vy=P.jumpForce;return;}
   if(STATE==='dead'){
-    const cy=H*0.62,ch=H*0.22,cpad=W*0.05;
+    const cy=H*0.62,ch=H*0.2,cpad=W*0.06;
     if(x>cpad&&x<W-cpad&&y>cy&&y<cy+ch){window.open('https://lynk.id/the_40_reset','_blank');return;}
-    const by2=H*0.87,bw2=W*0.18,bh2=H*0.08;
+    const by2=H*0.855,bw2=W*0.36,bh2=H*0.08;
     if(x>W/2-bw2-W*0.02&&x<W/2-W*0.02&&y>by2&&y<by2+bh2){restartGame();return;}
     if(x>W/2+W*0.02&&x<W/2+bw2+W*0.02&&y>by2&&y<by2+bh2){shareScore();return;}
     restartGame();
   }
 }
 
-function checkCode(){
-  const v=lockInput.toUpperCase().trim().replace(/[^A-Z0-9]/g,'');
-  if(v===CODE){STATE='charselect';}
-  else{lockErr='Kode salah. Beli dulu di The 40 Reset.';lockErrTimer=3;lockInput='';}
+function shareScore(){
+  const text=`Gue bertahan ${score} detik di SURVIVE YOUR BOSS! 😤\n\nBisa ngalahin gue? Main di:\nthe40reset.github.io/survive-your-boss\n\n#SurviveYourBoss #The40Reset`;
+  if(navigator.share)navigator.share({title:'SURVIVE YOUR BOSS',text});
+  else navigator.clipboard.writeText(text).then(()=>alert('Disalin! Share ke mana aja.'));
 }
 
 function startGame(){
@@ -599,15 +555,21 @@ function startGame(){
   milestoneShown={};milestoneMsg='';milestoneTimer=0;
   BOSS.anger=0;BOSS.throwAnim=0;
   STATE='levelstory';levelStoryTimer=levelStoryDuration;
-  lastTime=performance.now();
 }
 
 function restartGame(){startGame();}
 
-function shareScore(){
-  const text=`Gue bertahan ${score} detik di SURVIVE YOUR BOSS 😤\n\nBisa ngalahin gue? Main gratis:\nthe40reset.github.io\n\n#SurviveYourBoss #The40Reset`;
-  if(navigator.share)navigator.share({title:'SURVIVE YOUR BOSS',text});
-  else navigator.clipboard.writeText(text).then(()=>alert('Disalin! Share ke mana aja.'));
+function initGame(){
+  resize();
+  STATE='splash';
+  lastTime=performance.now();
+  requestAnimationFrame(loop);
+}
+
+function loop(ts){
+  const dt=Math.min((ts-lastTime)/1000,0.05);lastTime=ts;
+  update(dt);draw();
+  requestAnimationFrame(loop);
 }
 
 c.addEventListener('click',e=>{
@@ -619,26 +581,10 @@ c.addEventListener('touchstart',e=>{
   const r=c.getBoundingClientRect(),t=e.touches[0];
   handleTap((t.clientX-r.left)*(W/r.width),(t.clientY-r.top)*(H/r.height));
 },{passive:false});
-
 document.addEventListener('keydown',e=>{
-  if(STATE==='lock'){
-    if(e.key==='Enter'){checkCode();return;}
-    if(e.key==='Backspace'){lockInput=lockInput.slice(0,-1);return;}
-    if(e.key.length===1&&lockInput.length<10){lockInput+=e.key.toUpperCase();}
-    return;
-  }
   if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(STATE==='playing')P.vy=P.jumpForce;}
 });
-
-// ═══════════════ MAIN LOOP ═══════════════
-function loop(ts){
-  const dt=Math.min((ts-lastTime)/1000,0.05);
-  lastTime=ts;
-  update(dt);draw();
-  requestAnimationFrame(loop);
-}
-lastTime=performance.now();
-requestAnimationFrame(loop);
+window.addEventListener('resize',()=>{resize();});
 </script>
 </body>
 </html>
