@@ -1,577 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SURVIVE YOUR BOSS</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>SURVIVE YOUR BOSS — The 40 Reset</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#0A0A0F;font-family:'Courier New',monospace;color:#fff}
-
-/* LOCK - HTML */
-#lockScreen{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#0A0A0F;z-index:200;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:flex-start;
-  padding:24px 20px;gap:12px;
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
-}
-.lt{color:#C9A84C;font-size:clamp(36px,9vw,56px);font-weight:900;letter-spacing:3px;text-align:center;line-height:1.1;margin-bottom:4px}
-.lp{border:2px solid #C9A84C;padding:12px 20px;text-align:center;width:100%;background:rgba(201,168,76,0.08)}
-.lp .am{color:#C9A84C;font-size:clamp(30px,7vw,44px);font-weight:900;display:block}
-.lp .nt{color:#AAAABC;font-size:clamp(14px,3.5vw,18px);font-weight:700;display:block;margin-top:2px}
-.bb{display:block;width:100%;background:#C9A84C;color:#0A0A0F;font-size:clamp(18px,4.5vw,24px);font-weight:900;letter-spacing:2px;padding:16px;border:none;cursor:pointer;font-family:'Courier New',monospace}
-.dv{width:100%;height:1px;background:#2A2A3A}
-.al{color:#fff;font-size:clamp(15px,3.8vw,20px);font-weight:700;text-align:center}
-.ci{width:100%;background:#111118;border:2px solid #C9A84C;color:#fff;font-size:clamp(22px,5.5vw,32px);font-weight:900;letter-spacing:6px;text-align:center;padding:16px;font-family:'Courier New',monospace;outline:none;text-transform:uppercase;-webkit-appearance:none;border-radius:0}
-.ci::placeholder{color:#333;letter-spacing:2px;font-size:clamp(14px,3.5vw,18px)}
-.le{color:#E05555;font-size:clamp(14px,3.5vw,18px);font-weight:700;text-align:center;min-height:22px}
-.eb{display:block;width:100%;background:#1D9E75;color:#fff;font-size:clamp(18px,4.5vw,24px);font-weight:900;letter-spacing:2px;padding:16px;border:none;cursor:pointer;font-family:'Courier New',monospace}
-.db{width:100%;background:rgba(201,168,76,0.08);border-left:4px solid #C9A84C;padding:12px 16px}
-.db p{color:#fff;font-size:clamp(13px,3.2vw,16px);font-weight:700;line-height:1.6}
-
-/* GAME */
-#gameWrap{position:fixed;top:0;left:0;width:100%;height:100%;display:none}
-canvas{width:100%;height:100%;display:block}
+:root{--bg:#06080d;--panel:#0d121b;--panel2:#151922;--gold:#d6ae3d;--gold2:#ffd76a;--red:#ff4c4c;--white:#fff;--muted:#b9bdc7;--line:rgba(214,174,61,.42)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}html,body{width:100%;height:100%;overflow:hidden;background:#06080d;color:#fff;font-family:Inter,Arial,Helvetica,sans-serif}button,input{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at 50% 0%,rgba(63,50,22,.35),transparent 33%),linear-gradient(180deg,#0b0e15,#05060a 70%);overflow:auto}.phone{width:min(445px,100%);min-height:min(880px,100%);border:1px solid rgba(214,174,61,.28);border-radius:30px;background:linear-gradient(180deg,rgba(12,16,25,.96),rgba(5,7,12,.98));box-shadow:0 30px 90px rgba(0,0,0,.6);position:relative;overflow:hidden;padding:26px 26px 22px}.phone:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 12%,rgba(255,215,106,.14),transparent 28%),linear-gradient(90deg,transparent 0 13%,rgba(255,255,255,.025) 13% 14%,transparent 14% 36%,rgba(255,255,255,.02) 36% 37%,transparent 37% 64%,rgba(255,255,255,.02) 64% 65%,transparent 65% 100%);pointer-events:none}.topbar{position:relative;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;z-index:1}.badge{color:#ffd76a;font-size:13px;font-weight:900;line-height:1.15;text-transform:uppercase}.premium{border:1px solid var(--line);border-radius:10px;color:#ffd76a;padding:8px 10px;font-weight:950;font-size:13px;text-align:center;line-height:1.05;background:rgba(214,174,61,.08)}.hero{position:relative;z-index:1;text-align:left;min-height:370px;display:flex;flex-direction:column;justify-content:center}.lamp{position:absolute;top:36px;left:50%;transform:translateX(-50%);width:54px;height:54px;border-radius:0 0 32px 32px;background:#171717;box-shadow:0 14px 80px 35px rgba(255,210,100,.22)}.lamp:after{content:"";position:absolute;left:13px;top:18px;width:28px;height:28px;border-radius:50%;background:#ffd76a;box-shadow:0 0 25px #ffd76a}.desk{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(180deg,transparent,#090b10)}.papers{display:none}.papers.r{display:none}.bossHero{position:absolute;right:20px;bottom:82px;width:74px;height:104px;z-index:2;opacity:.95}.heroChar{position:absolute;left:38px;bottom:82px;width:62px;height:80px;transform:rotate(-8deg);z-index:2;opacity:.95}.title{position:relative;z-index:5;font-size:clamp(50px,14vw,76px);font-weight:1000;letter-spacing:-.075em;line-height:.82;text-transform:uppercase;text-shadow:0 3px 0 rgba(0,0,0,.75)}.title span{display:block}.title .gold{color:var(--gold2)}.subtitle{position:relative;z-index:5;margin-top:24px;font-size:22px;font-weight:950;line-height:1.18;text-align:center;text-shadow:0 2px 8px #000}.desc{position:relative;z-index:5;text-align:center;margin-top:10px;color:#e7e8ee;font-size:14px;font-weight:850;text-shadow:0 2px 8px #000}.seg{position:relative;z-index:2;display:flex;margin:22px auto 14px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06);border-radius:18px;padding:4px;width:100%;max-width:330px}.seg button{flex:1;border-radius:14px;padding:13px 8px;background:transparent;color:white;font-weight:950;font-size:14px}.seg button.active{background:var(--gold);color:#08080c;box-shadow:0 4px 20px rgba(214,174,61,.25)}.bigbtn{position:relative;z-index:2;width:100%;border-radius:16px;padding:20px 18px;background:linear-gradient(180deg,#fff,#e9e9e9);color:#07080b;font-weight:1000;font-size:22px;letter-spacing:.02em;box-shadow:0 8px 0 rgba(255,255,255,.08);text-transform:uppercase}.goldbtn{background:linear-gradient(180deg,#ffda68,#c99b25);color:#090909;box-shadow:0 0 24px rgba(214,174,61,.22)}.priceCard{position:relative;z-index:2;margin:18px auto 14px;padding:16px 14px;border:1px solid rgba(255,215,106,.62);border-radius:18px;background:linear-gradient(180deg,rgba(214,174,61,.12),rgba(0,0,0,.18));box-shadow:0 0 28px rgba(214,174,61,.16);text-align:center}.priceCard .small{color:#ffd76a;font-size:13px;font-weight:950;text-transform:uppercase;letter-spacing:.04em}.priceCard .price{font-size:40px;font-weight:1000;letter-spacing:.02em;color:#fff;margin:4px 0;text-shadow:0 3px 0 rgba(0,0,0,.45)}.priceCard .benefit{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;color:#f1f1f1;font-size:12px;font-weight:850}.foot{position:relative;z-index:2;text-align:center;margin-top:18px}.don{color:#ffd76a;font-weight:900;font-size:14px}.brand{margin-top:34px;color:#8f929b;font-weight:950}.accessBox{position:relative;z-index:1;text-align:center;padding-top:10px}.lock{width:92px;height:92px;margin:0 auto 22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(214,174,61,.12);font-size:42px;box-shadow:0 0 45px rgba(214,174,61,.15)}h2{font-size:30px;line-height:1.05;color:#ffd76a;margin-bottom:16px;text-transform:uppercase}p{color:#e9e9ef;line-height:1.5;font-weight:750}.code{margin:28px 0 14px;width:100%;border:1px solid rgba(214,174,61,.55);background:rgba(255,255,255,.055);color:#fff;border-radius:14px;padding:18px;text-align:center;font-size:24px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;outline:none}.code::placeholder{font-size:15px;letter-spacing:.03em;color:#6e717b}.err{height:22px;color:#ff6d6d;font-size:13px;font-weight:900}.premiumList{margin-top:22px;border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:18px;text-align:left;background:rgba(255,255,255,.035)}.premiumList b{display:block;color:#ffd76a;margin-bottom:10px}.premiumList div{margin:8px 0;color:#f2f2f2;font-weight:850}.buyLink{display:block;text-decoration:none;text-align:center;margin-top:16px;border-radius:15px;padding:15px;color:#090909;background:#fff;font-weight:1000;text-transform:uppercase}#game{position:fixed;inset:0;display:none;background:#06080d}canvas{display:block;width:100%;height:100%;touch-action:none}.back{position:absolute;top:14px;left:14px;z-index:20;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:#fff;border-radius:999px;padding:10px 13px;font-weight:900}
 </style>
 </head>
 <body>
-
-<div id="lockScreen">
-  <div class="lt">SURVIVE<br>YOUR BOSS</div>
-  <div class="lp">
-    <span class="am">Rp 15.000</span>
-    <span class="nt">Murah meriah kok</span>
-  </div>
-  <button class="bb" onclick="window.open('https://lynk.id/the_40_reset','_blank')">BELI DI THE 40 RESET →</button>
-  <div class="dv"></div>
-  <div class="al">Sudah beli? Masukkan kode kamu</div>
-  <input type="text" class="ci" id="codeInput" placeholder="KODE AKSES" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text">
-  <div class="le" id="lockErr"></div>
-  <button class="eb" onclick="checkCode()">MASUK →</button>
-  <div class="db">
-    <p>❤️ Setiap penjualan — 10% langsung disumbangkan ke yayasan yang membutuhkan. Bukan janji.</p>
-  </div>
-</div>
-
-<div id="gameWrap"><canvas id="c"></canvas></div>
-
+<div id="splash" class="screen"><div class="phone"><div class="topbar"><div class="badge">❤ 10% donated<br><small>berbagi kebaikan</small></div><div class="premium">PREMIUM<br>ACCESS</div></div><div class="hero"><div class="lamp"></div><div class="papers"></div><div class="papers r"></div><canvas id="bossHero" class="bossHero"></canvas><canvas id="runnerHero" class="heroChar"></canvas><div class="title"><span>SURVIVE</span><span>YOUR <span class="gold">BOSS</span></span></div><div class="subtitle" data-i="sub">Berapa lama kamu bisa bertahan?</div><div class="desc">Deadline. Email. Meeting. Chaos.</div><div class="desk"></div></div><div class="seg"><button id="idBtn" class="active">🇮🇩 INDONESIA</button><button id="enBtn">🇺🇸 ENGLISH</button></div><div class="priceCard"><div class="small" data-i="priceSmall">AKSES PREMIUM SELAMANYA</div><div class="price">Rp 15.000</div><div class="benefit"><span>👑 Premium</span><span>🚫 Tanpa Iklan</span><span>❤ 10% Donasi</span></div></div><button id="startBtn" class="bigbtn goldbtn" data-i="tap">TAP UNTUK MULAI</button><div class="foot"><div class="don" data-i="don">❤ 10% dari setiap pembelian disalurkan untuk yayasan yang membutuhkan.</div><div class="brand">the40reset.github.io</div></div></div></div>
+<div id="access" class="screen hidden"><div class="phone"><div class="accessBox"><div class="lock">🔒</div><h2 data-i="accessTitle">AKSES PREMIUM</h2><p data-i="accessText">Masukkan kode akses Anda untuk memulai game.</p><input id="code" class="code" placeholder="KODE AKSES" maxlength="16" autocomplete="off" /><div id="err" class="err"></div><button id="enterBtn" class="bigbtn goldbtn" data-i="enter">MASUK</button><a class="buyLink" href="https://lynk.id/the_40_reset" target="_blank" data-i="buy">BELI AKSES DI THE 40 RESET</a><div class="premiumList"><b data-i="prod">🔐 PRODUK PREMIUM</b><div data-i="li1">✓ Konten eksklusif</div><div data-i="li2">✓ Experience terbaik</div><div data-i="li3">✓ 10% untuk donasi</div></div></div></div></div>
+<div id="game"><button id="back" class="back hidden">←</button><canvas id="c"></canvas></div>
 <script>
-const CODE='MYBOSS';
-function checkCode(){
-  const v=document.getElementById('codeInput').value.toUpperCase().trim().replace(/[^A-Z0-9]/g,'');
-  const e=document.getElementById('lockErr');
-  if(v===CODE){
-    document.getElementById('lockScreen').style.display='none';
-    document.getElementById('gameWrap').style.display='block';
-    initGame();
+'use strict';
+const ACCESS_CODES=['MYBOSS','RESET40','BOSS15000'];
+const BUY_URL='https://lynk.id/the_40_reset';
+let lang='id';
+const I={id:{sub:'Berapa lama kamu bisa bertahan?',tap:'TAP UNTUK MULAI',priceSmall:'AKSES PREMIUM SELAMANYA',don:'❤ 10% dari pembayaran Anda akan didonasikan.',accessTitle:'AKSES PREMIUM',accessText:'Masukkan kode akses Anda untuk memulai game.',enter:'MASUK',buy:'BELI AKSES DI THE 40 RESET',prod:'🔐 PRODUK PREMIUM',li1:'✓ Konten eksklusif',li2:'✓ Experience terbaik',li3:'✓ 10% dari pembayaran Anda akan didonasikan'},en:{sub:'How long can you survive?',tap:'TAP TO START',priceSmall:'LIFETIME PREMIUM ACCESS',don:'❤ 10% of your payment will be donated.',accessTitle:'PREMIUM ACCESS',accessText:'Enter your access code to start the game.',enter:'ENTER',buy:'BUY ACCESS AT THE 40 RESET',prod:'🔐 PREMIUM PRODUCT',li1:'✓ Exclusive content',li2:'✓ Better experience',li3:'✓ 10% of your payment will be donated'}};
+function applyLang(){document.querySelectorAll('[data-i]').forEach(el=>{el.textContent=I[lang][el.dataset.i]||el.textContent});idBtn.classList.toggle('active',lang==='id');enBtn.classList.toggle('active',lang==='en')}
+idBtn.onclick=()=>{lang='id';applyLang()}; enBtn.onclick=()=>{lang='en';applyLang()};
+startBtn.onclick=()=>{splash.classList.add('hidden');access.classList.remove('hidden');setTimeout(()=>code.focus(),150)};
+enterBtn.onclick=checkCode; code.addEventListener('keydown',e=>{if(e.key==='Enter')checkCode()});
+function checkCode(){const v=code.value.toUpperCase().replace(/[^A-Z0-9]/g,'');if(ACCESS_CODES.includes(v)){access.classList.add('hidden');game.style.display='block';initGame()}else{err.textContent=lang==='id'?'Kode salah. Cek lagi kode akses Anda.':'Wrong code. Please check your access code.';code.value='';setTimeout(()=>err.textContent='',2300)}}
+function miniCanvas(){const b=document.getElementById('bossHero'),r=document.getElementById('runnerHero');[b,r].forEach(x=>{x.width=x.clientWidth*2;x.height=x.clientHeight*2});let bx=b.getContext('2d');bx.scale(2,2);drawBossIcon(bx,b.clientWidth/2,b.clientHeight*.58,1.35,.35);let rx=r.getContext('2d');rx.scale(2,2);drawPersonIcon(rx,r.clientWidth/2,r.clientHeight*.58,1.1,false,true)}
+window.addEventListener('load',miniCanvas);window.addEventListener('resize',miniCanvas);
+function drawPersonIcon(cx,x,y,s,female,run){cx.save();cx.translate(x,y);cx.scale(s,s);cx.rotate(run?-0.12:0);let skin='#f3aa64';cx.fillStyle='#1e2430';cx.fillRect(-13,4,10,24);cx.fillRect(4,4,10,24);cx.fillStyle='#f7f7f3';cx.fillRect(-16,-20,32,28);cx.fillStyle='#b9272d';cx.fillRect(-3,-19,7,26);cx.fillStyle=skin;cx.fillRect(-14,-48,28,30);cx.fillStyle=female?'#2a130d':'#4b2b12';cx.fillRect(-16,-52,32,9);if(female){cx.fillRect(-18,-42,7,30);cx.fillRect(11,-42,7,30);cx.fillStyle='#111827';cx.fillRect(-17,-1,34,30)}cx.fillStyle='#101014';cx.fillRect(-9,-36,5,7);cx.fillRect(5,-36,5,7);cx.fillStyle='#743d2d';cx.fillRect(-7,-25,14,5);cx.fillStyle='#101014';cx.fillRect(run?-25:-19,run?-2:-8,8,20);cx.fillRect(run?18:13,run?-13:-8,8,20);cx.restore()}
+function drawBossIcon(cx,x,y,s,anger){cx.save();cx.translate(x,y);cx.scale(s,s);const face=anger>.7?'#ee443f':anger>.35?'#e98b5d':'#f0a45f';cx.fillStyle='#0d1230';cx.fillRect(-30,-4,60,62);cx.fillStyle='#fff';cx.fillRect(-12,-4,24,44);cx.fillStyle='#d83b38';cx.fillRect(-4,-4,9,38);cx.fillStyle=face;cx.fillRect(-25,-66,50,58);cx.fillStyle='#301a0c';cx.fillRect(-25,-70,50,12);cx.fillRect(-28,-58,10,43);cx.fillRect(18,-58,10,43);cx.fillStyle='#111';cx.fillRect(-17,-43,12,10);cx.fillRect(5,-43,12,10);cx.fillStyle=anger>.55?'#5e1111':'#9d6043';cx.fillRect(-15,-24,30,8);cx.restore()}
+const c=document.getElementById('c'),ctx=c.getContext('2d');let W=0,H=0,DPR=1,STATE='select',last=0,score=0,best=+localStorage.getItem('syb_best_v3')||0,level=1,spawn=0,objs=[],parts=[],sel='male',storyT=0,quoteT=0,quote='',milestone='',milestoneT=0,deadQuote='',started=false;
+const P={x:0,y:0,vy:0,w:28,h:40,rot:0};
+const levels=[{t:0,n:'REVISI LAPORAN',enN:'REPORT REVISION',id:'Senin pagi.\nBos menemukan 47 kesalahan\ndi laporan Jumat kamu.',en:'Monday morning.\nYour boss found 47 mistakes\nin your Friday report.',obj:'PAPER',col:'#f4f2e9',rate:1.05,cnt:1},{t:30,n:'EMAIL URGENT',enN:'URGENT EMAILS',id:'09:00 pagi.\n23 email masuk.\nSemuanya URGENT.',en:'09:00 AM.\n23 emails arrived.\nAll marked URGENT.',obj:'EMAIL',col:'#eef2f7',rate:.82,cnt:1},{t:60,n:'PROYEK DADAKAN',enN:'SUDDEN PROJECTS',id:'3 proyek baru.\nDeadline besok pagi.\nKamu baru tahu hari ini.',en:'3 new projects.\nDue tomorrow morning.\nYou just found out today.',obj:'FOLDER',col:'#d6ae3d',rate:.62,cnt:2},{t:90,n:'MEETING MENDADAK',enN:'SUDDEN MEETING',id:'Katanya sebentar.\nTernyata 2 jam.\nDeadline tetap jalan.',en:'He said quick meeting.\nIt took 2 hours.\nDeadline still stands.',obj:'MEETING',col:'#4a90d9',rate:.46,cnt:2},{t:120,n:'EXCEL NERAKA',enN:'EXCEL HELL',id:'Pivot table katanya gampang.\n300 baris. Formula salah.\n30 menit. Go.',en:'Pivot table is easy, he said.\n300 rows. Wrong formulas.\n30 minutes. Go.',obj:'EXCEL',col:'#39a874',rate:.34,cnt:3},{t:150,n:'TOTAL CHAOS',enN:'TOTAL CHAOS',id:'Semuanya urgent.\nSemua dilempar ke kamu.\nBertahan.',en:'Everything is urgent.\nEverything is thrown at you.\nSurvive.',obj:'CHAOS',col:'#a56cff',rate:.25,cnt:4}];
+const quotesID=['Tolong revisi sedikit ya...','Bisa meeting sebentar?','Ini urgent banget.','Kamu kan masih muda.','Anggap ini kesempatan belajar.','Kerjaan tim bantu handle dulu.'];
+const quotesEN=['Small revision please... 😡','Quick meeting?','This is very urgent.','You are still young.','This is a learning opportunity.','Please help the team for now.'];
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);P.w=Math.max(25,W*.07);P.h=P.w*1.38;P.x=W*.18;if(!started)P.y=H*.56}
+function initGame(){resize();STATE='select';last=performance.now();requestAnimationFrame(loop)}
+function playTop(){return H*.16}function playBot(){return H*.88}function speed(){return W*(.0052+Math.min(score/140,.9)*.0038)}function curLevel(){return levels[Math.min(level-1,levels.length-1)]}
+function startRun(){started=true;score=0;level=1;objs=[];parts=[];spawn=.8;P.x=W*.18;P.y=H*.56;P.vy=0;STATE='story';storyT=2.15;quoteT=0;milestoneT=0}
+function reset(){startRun()}function jump(){P.vy=-H*.0125}
+function showQuote(){quote=(lang==='id'?quotesID:quotesEN)[Math.floor(Math.random()*quotesID.length)];quoteT=1.6}
+function spawnObj(){let l=curLevel();let cnt=l.cnt+(Math.random()<.25?1:0);for(let i=0;i<cnt;i++){let h=Math.max(52,W*.14),w=h*.72;let y=playTop()+10+Math.random()*(playBot()-playTop()-h-20);let type=l.obj;if(type==='CHAOS')type=['PAPER','EMAIL','FOLDER','MEETING','EXCEL','REPORT'][Math.floor(Math.random()*6)];objs.push({x:W+w+i*w*.75,y,w,h,type,col:l.col,vx:-speed()*(1+Math.random()*.25),r:0,rs:(Math.random()-.5)*.09})}showQuote()}
+function update(dt){if(STATE==='story'){storyT-=dt;if(storyT<=0){STATE='play';showQuote()}return}if(STATE!=='play')return;score+=dt;let nl=score<30?1:score<60?2:score<90?3:score<120?4:score<150?5:6;if(nl!==level){level=nl;objs=[];STATE='story';storyT=1.85;milestone=(lang==='id'?['','30 DETIK','60 DETIK','90 DETIK','120 DETIK','150 DETIK'][level-1]:['','30 SECONDS','60 SECONDS','90 SECONDS','120 SECONDS','150 SECONDS'][level-1]);milestoneT=1.7;return}P.vy+=H*.00066;P.y+=P.vy;P.rot=Math.max(-.35,Math.min(.35,P.vy*.035));let top=playTop()+P.h/2,bot=playBot()-P.h/2;if(P.y<top){P.y=top;P.vy=0}if(P.y>bot){P.y=bot;P.vy=0}spawn-=dt;if(spawn<=0){spawnObj();spawn=curLevel().rate*(1-Math.min(score/180,.38))}for(let i=objs.length-1;i>=0;i--){let o=objs[i];o.x+=o.vx;o.r+=o.rs;if(o.x+o.w<0){objs.splice(i,1);continue}let px=P.x-P.w*.38,py=P.y-P.h*.45,pw=P.w*.76,ph=P.h*.88;if(!(px+pw<o.x||px>o.x+o.w||py+ph<o.y||py>o.y+o.h)){die();return}}if(quoteT>0)quoteT-=dt;if(milestoneT>0)milestoneT-=dt}
+function die(){STATE='dead';let s=Math.floor(score);if(s>best){best=s;localStorage.setItem('syb_best_v3',best)}deadQuote=s<30?(lang==='id'?'Baru pemanasan.':'Just warming up.'):s<70?(lang==='id'?'Lumayan. Bos mulai kesal.':'Not bad. Boss is annoyed.'):s<130?(lang==='id'?'Kuat juga kamu.':'You are strong.'):s<180?(lang==='id'?'Bos mulai takut.':'Boss is getting scared.'):(lang==='id'?'Kamu siap jadi bos sekarang.':'You are ready to be the boss.')}
+function bg(){ctx.fillStyle='#06080d';ctx.fillRect(0,0,W,H);let grd=ctx.createLinearGradient(0,0,0,H);grd.addColorStop(0,'#0e1420');grd.addColorStop(.55,'#06080d');grd.addColorStop(1,'#050509');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(214,174,61,.55)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,playTop());ctx.lineTo(W,playTop());ctx.moveTo(0,playBot());ctx.lineTo(W,playBot());ctx.stroke();for(let x=-(score*30%160);x<W+160;x+=160){ctx.fillStyle='rgba(255,255,255,.035)';ctx.fillRect(x+18,playTop()+40,82,playBot()-playTop()-80);ctx.fillStyle='rgba(35,55,85,.18)';ctx.fillRect(x+28,playTop()+55,62,playBot()-playTop()-110)}for(let i=0;i<24;i++){ctx.fillStyle='rgba(255,211,95,.18)';ctx.fillRect((i*73+score*9)%W,playTop()+40+(i*47)%(playBot()-playTop()-80),2,2)}}
+function text(t,x,y,s,col='#fff',align='center',font='Arial'){ctx.fillStyle=col;ctx.font=`900 ${s}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(t,x,y)}
+function wrapLines(str,x,y,s,col){str.split('\n').forEach((l,i)=>text(l,x,y+i*s*1.45,s,col))}
+function drawSelect(){bg();text('SIAPA KAMU',W/2,H*.09,34,'#fff');text('HARI INI?',W/2,H*.14,38,'#ffd76a');text(lang==='id'?'Pilih karaktermu':'Choose your character',W/2,H*.19,16,'#e6e6e6');let bw=W*.39,bh=H*.42,by=H*.28;drawCard(W*.07,by,bw,bh,'male');drawCard(W*.54,by,bw,bh,'female');let y=H*.82;roundRect(W*.08,y,W*.84,60,12,'#d6ae3d');text(lang==='id'?'MULAI PERJUANGAN':'START THE FIGHT',W/2,y+30,19,'#08080c')}
+function drawCard(x,y,w,h,type){let active=sel===type;roundRect(x,y,w,h,14,active?'rgba(214,174,61,.16)':'rgba(255,255,255,.055)',active?'#ffd76a':'rgba(255,255,255,.25)');drawPersonIcon(ctx,x+w/2,y+h*.35,Math.min(w/80,1.15),type==='female',false);text(type==='male'?'OFFICE':'CORPORATE',x+w/2,y+h*.65,18,'#fff');text(type==='male'?'WARRIOR':'SURVIVOR',x+w/2,y+h*.72,18,'#fff');let cap=type==='male'?(lang==='id'?'Masih pura-pura':'Still pretending'):(lang==='id'?'Satu email lagi':'One email away');let cap2=type==='male'?(lang==='id'?'baik-baik saja.':'I am okay.'):(lang==='id'?'langsung resign.':'from resigning.');text(cap,x+w/2,y+h*.84,13,'#d8d8df');text(cap2,x+w/2,y+h*.9,13,'#d8d8df')}
+function roundRect(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke()}}
+function drawStory(){bg();let l=curLevel();roundRect(W*.08,H*.24,W*.84,H*.46,22,'rgba(10,12,18,.88)','#d6ae3d');text('LEVEL '+level,W/2,H*.33,28,'#ffd76a');text(lang==='id'?l.n:l.enN,W/2,H*.41,26,'#fff');wrapLines(lang==='id'?l.id:l.en,W/2,H*.52,20,'#fff');text(lang==='id'?'SIAP-SIAP...':'GET READY...',W/2,H*.76,16,'#ffd76a')}
+function drawGame(){bg();if(quoteT>0){let bx=W*.24,by=playTop()+14,bw=W*.62,bh=42;roundRect(bx,by,bw,bh,12,'rgba(6,8,13,.58)','#d6ae3d');text(quote,bx+bw/2,by+bh/2,Math.min(13,W*.031),'#fff')}objs.forEach(drawObj);ctx.save();ctx.translate(P.x,P.y);ctx.rotate(P.rot);drawPersonIcon(ctx,0,0,P.w/28,sel==='female',true);ctx.restore();drawHUD();}
+function drawHUD(){text('LVL '+level,W*.08,H*.08,16,'#ffd76a','left');text(Math.floor(score)+'s',W/2,H*.08,37,'#ffd76a');drawBossIcon(ctx,W*.88,H*.1,Math.min(W/420,.82),Math.min(score/160,1));roundRect(W*.08,H*.12,W*.58,18,5,'rgba(0,0,0,.35)','rgba(255,255,255,.25)');ctx.fillStyle='#ff4c4c';let bars=Math.floor(Math.min(score/150,1)*10);for(let i=0;i<bars;i++)ctx.fillRect(W*.095+i*W*.047,H*.126,W*.034,6);text('ANGER',W*.15,H*.15,12,'#fff');text(lang==='id'?'TAP UNTUK LOMPAT':'TAP TO JUMP',W/2,H*.93,16,'#ffd76a')}
+
+function drawObj(o){
+  ctx.save();ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.r);
+  const w=o.w,h=o.h;
+  if(o.type==='PAPER'){
+    ctx.fillStyle='#f4f2e9';ctx.fillRect(-w/2,-h/2,w,h);
+    ctx.strokeStyle='#b7bdc7';ctx.lineWidth=1.5;ctx.strokeRect(-w/2,-h/2,w,h);
+    ctx.strokeStyle='rgba(70,90,120,.45)';ctx.lineWidth=2;
+    for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(-w*.35,i*h*.14);ctx.lineTo(w*.35,i*h*.14);ctx.stroke()}
+  } else if(o.type==='EMAIL'){
+    ctx.fillStyle='#eef2f7';ctx.fillRect(-w/2,-h/2,w,h);
+    ctx.strokeStyle='#b7bdc7';ctx.lineWidth=1.5;ctx.strokeRect(-w/2,-h/2,w,h);
+    ctx.strokeStyle='#d33';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-w/2,-h/2);ctx.lineTo(0,0);ctx.lineTo(w/2,-h/2);ctx.stroke();
+  } else if(o.type==='FOLDER'){
+    ctx.fillStyle='#c99020';ctx.fillRect(-w/2,-h*.35,w*.48,h*.18);ctx.fillRect(-w/2,-h*.2,w,h*.7);
+    ctx.fillStyle='#f0b33c';ctx.fillRect(-w*.45,-h*.12,w*.9,h*.55);
+    ctx.strokeStyle='rgba(0,0,0,.35)';ctx.strokeRect(-w*.45,-h*.12,w*.9,h*.55);
+  } else if(o.type==='MEETING'){
+    ctx.fillStyle='#4a90d9';ctx.beginPath();ctx.roundRect(-w/2,-h*.35,w,h*.55,8);ctx.fill();
+    ctx.fillStyle='#4a90d9';ctx.beginPath();ctx.moveTo(-w*.1,h*.2);ctx.lineTo(w*.1,h*.2);ctx.lineTo(0,h*.38);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font=`900 ${Math.max(10,w*.18)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('MEET',0,-h*.08);
+  } else if(o.type==='EXCEL'){
+    ctx.fillStyle='#1d9e75';ctx.fillRect(-w/2,-h/2,w,h);ctx.fillStyle='rgba(255,255,255,.92)';ctx.fillRect(-w*.34,-h*.32,w*.68,h*.64);
+    ctx.strokeStyle='#1d9e75';ctx.lineWidth=1;for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(i*w*.17,-h*.32);ctx.lineTo(i*w*.17,h*.32);ctx.stroke();ctx.beginPath();ctx.moveTo(-w*.34,i*h*.16);ctx.lineTo(w*.34,i*h*.16);ctx.stroke()}
+  } else if(o.type==='REPORT'){
+    ctx.fillStyle='#ff5757';ctx.fillRect(-w/2,-h/2,w,h);ctx.fillStyle='#fff';ctx.fillRect(-w*.35,-h*.30,w*.7,h*.55);ctx.fillStyle='#ff5757';ctx.font=`900 ${Math.max(10,w*.16)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('REPORT',0,0);
   } else {
-    e.textContent='Kode salah. Beli dulu di The 40 Reset.';
-    document.getElementById('codeInput').value='';
-    setTimeout(()=>e.textContent='',3000);
+    ctx.fillStyle=o.col;ctx.fillRect(-w/2,-h/2,w,h);ctx.fillStyle='#111';ctx.font=`900 ${Math.max(10,w*.22)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(o.type,0,0)
   }
+  ctx.restore()
 }
-document.getElementById('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkCode();});
-
-// ═══════════ GAME ═══════════
-const c=document.getElementById('c');
-const ctx=c.getContext('2d');
-let W,H;
-function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
-
-// Portrait: objects come from RIGHT, player on LEFT side, jumps UP/DOWN
-// Flappy bird: gravity pulls down, tap = jump up
-// Portrait means W < H
-
-let STATE='splash';
-let selChar='male';
-let gTime=0,score=0,best=parseInt(localStorage.getItem('syb_best')||'0');
-let bgOff=0,lt=0,curLvl=1,lastLvl=1;
-let msShown={},msMsg='',msTimer=0;
-let lstT=0,lstDur=3;
-let parts=[],projs=[],spT=0,splashT=0;
-
-// PORTRAIT layout: player moves UP/DOWN on left side
-// Objects fly from RIGHT to LEFT
-// Play area: full width, between top bar and bottom bar
-const PLAY_TOP_PCT=0.12;  // top 12% = HUD
-const PLAY_BOT_PCT=0.92;  // bottom 8% = floor
-
-const P={
-  x:0,y:0,
-  vy:0,
-  grav:0,   // set in resize
-  jump:0,   // set in resize
-  w:0,h:0,  // set in resize
-  rot:0,trail:[]
-};
-
-const BOSS={anger:0,throwAnim:0};
-
-const LEVELS=[
-  {n:1,name:'PAPER STORM',story:['Monday morning.','Your boss found 47 things wrong','with your Friday report.'],obj:'PAPER',col:'#F5F5F5',rate:0.8,cnt:1,spd:0},
-  {n:2,name:'EMAIL TSUNAMI',story:['9 AM. 23 unread emails.','All marked URGENT.','All from your boss.'],obj:'EMAIL',col:'#4A90D9',rate:0.58,cnt:1,spd:0},
-  {n:3,name:'FOLDER FRENZY',story:['3 new projects dumped on you.','All due tomorrow.','You never agreed to this.'],obj:'FOLDER',col:'#EF9F27',rate:0.42,cnt:2,spd:0},
-  {n:4,name:'REPORT RAGE',story:['Full report in 2 hours.','You had no data.','He does not care.'],obj:'REPORT',col:'#E05555',rate:0.30,cnt:2,spd:0},
-  {n:5,name:'EXCEL HELL',story:["Can't do pivot tables?",'Your problem now.','300 rows. 30 minutes.'],obj:'EXCEL',col:'#1D9E75',rate:0.20,cnt:3,spd:0},
-  {n:6,name:'TOTAL CHAOS',story:['Your boss lost his mind.','Everything. Is. Flying.','No escape.'],obj:'CHAOS',col:'#9B59B6',rate:0.11,cnt:4,spd:0},
-];
-const CHAOS_D=[
-  {col:'#F5F5F5',n:'PAPER'},{col:'#4A90D9',n:'EMAIL'},{col:'#EF9F27',n:'FOLDER'},
-  {col:'#E05555',n:'REPORT'},{col:'#1D9E75',n:'EXCEL'},{col:'#C9A84C',n:'CASE'},
-  {col:'#FF6B6B',n:'PROJECT'},{col:'#555',n:'LAPTOP'},
-];
-const MS=[
-  {t:15,m:'Survived the morning meeting!'},
-  {t:30,m:'Survived the deadline!'},
-  {t:50,m:'Survived the performance review!'},
-  {t:70,m:'Your boss is getting personal...'},
-  {t:90,m:'Are you even human?'},
-  {t:120,m:'HR notified. Of your excellence.'},
-  {t:150,m:'Your boss is crying in the bathroom.'},
-  {t:180,m:'Legend. Absolute legend.'},
-  {t:240,m:'YOU ARE A PRO.'},
-];
-
-function setPlayerSize(){
-  // Portrait: player is small, on left side
-  P.w=W*0.08;
-  P.h=W*0.12;
-  P.x=W*0.12;
-  P.y=H*0.5;
-  // Gravity and jump tuned for portrait feel
-  P.grav=H*0.0008;   // gentle gravity
-  P.jump=-(H*0.015); // gentle jump — not flying to top
-}
-
-function getProjSize(){
-  return {pw:W*0.14,ph:W*0.08};
-}
-
-function getProjSpeed(){
-  const base=W*0.006;
-  const bonus=Math.min(gTime/60,1)*W*0.004;
-  return base+bonus;
-}
-
-// ── Pixel Art (scaled to W) ──
-function drawChar(cx,x,y,female,panic){
-  const s=P.w/20;
-  cx.save();cx.translate(x,y);
-  const sk='#F4C27F';
-  if(!female){
-    cx.fillStyle='#111';cx.fillRect(-8*s,14*s,7*s,5*s);cx.fillRect(2*s,14*s,7*s,5*s);
-    cx.fillStyle='#1a1a3a';cx.fillRect(-8*s,0,16*s,16*s);
-    cx.fillStyle='#fff';cx.fillRect(-9*s,-12*s,18*s,14*s);
-    cx.fillStyle='#C9A84C';cx.fillRect(-2*s,-12*s,4*s,12*s);
-    cx.fillStyle=sk;cx.fillRect(-8*s,-28*s,16*s,18*s);
-    cx.fillStyle='#3a2510';cx.fillRect(-8*s,-28*s,16*s,5*s);
-  } else {
-    cx.fillStyle='#111';cx.fillRect(-7*s,14*s,6*s,5*s);cx.fillRect(2*s,14*s,6*s,5*s);
-    cx.fillStyle='#1a1a3a';cx.fillRect(-9*s,0,18*s,16*s);
-    cx.fillStyle='#C9A84C';cx.fillRect(-9*s,-12*s,18*s,14*s);
-    cx.fillStyle='#0A0A0F';cx.fillRect(-1*s,-12*s,2*s,14*s);
-    cx.fillStyle=sk;cx.fillRect(-8*s,-28*s,16*s,18*s);
-    cx.fillStyle='#1a0808';cx.fillRect(-9*s,-30*s,18*s,7*s);
-    cx.fillRect(-10*s,-24*s,4*s,16*s);cx.fillRect(7*s,-24*s,4*s,16*s);
-  }
-  if(panic){
-    cx.fillStyle='#fff';cx.fillRect(-6*s,-20*s,4*s,6*s);cx.fillRect(2*s,-20*s,4*s,6*s);
-    cx.fillStyle='#000';cx.fillRect(-5*s,-19*s,2*s,3*s);cx.fillRect(3*s,-19*s,2*s,3*s);
-    cx.fillStyle='#E05555';cx.fillRect(-4*s,-12*s,8*s,3*s);
-  } else {
-    cx.fillStyle='#000';cx.fillRect(-6*s,-20*s,4*s,4*s);cx.fillRect(2*s,-20*s,4*s,4*s);
-    cx.fillStyle='#c87a4a';cx.fillRect(-4*s,-12*s,8*s,3*s);
-  }
-  cx.restore();
-}
-
-function drawBoss(cx,x,y){
-  const s=W*0.006;
-  const anger=BOSS.anger;
-  const throwing=BOSS.throwAnim>0.1;
-  cx.save();cx.translate(x,y);
-  const face=anger>0.7?'#FF3333':anger>0.4?'#FF6644':'#F4A460';
-  const suit=anger>0.7?'#5a0000':anger>0.4?'#7a1111':'#111133';
-  cx.fillStyle=suit;cx.fillRect(-14*s,-6*s,28*s,38*s);
-  cx.fillStyle='#fff';cx.fillRect(-6*s,-6*s,12*s,22*s);
-  cx.fillStyle='#E05555';cx.fillRect(-2*s,-6*s,5*s,16*s);
-  cx.fillStyle=face;cx.fillRect(-12*s,-40*s,24*s,36*s);
-  cx.fillStyle='#1a0a00';cx.fillRect(-12*s,-40*s,24*s,6*s);
-  cx.fillRect(-12*s,-34*s,4*s,22*s);cx.fillRect(8*s,-34*s,4*s,22*s);
-  if(anger>0.3){cx.fillStyle='#1a0a00';cx.fillRect(-10*s,-28*s,8*s,3*s);cx.fillRect(2*s,-28*s,8*s,3*s);}
-  cx.fillStyle='#111';cx.fillRect(-9*s,-22*s,6*s,6*s);cx.fillRect(3*s,-22*s,6*s,6*s);
-  cx.fillStyle='#fff';cx.fillRect(-8*s,-21*s,3*s,3*s);cx.fillRect(4*s,-21*s,3*s,3*s);
-  if(anger>0.5){
-    cx.fillStyle='#500';cx.fillRect(-8*s,-13*s,16*s,6*s);
-    cx.fillStyle='#fff';cx.fillRect(-6*s,-12*s,3*s,4*s);cx.fillRect(-1*s,-12*s,3*s,4*s);cx.fillRect(3*s,-12*s,3*s,4*s);
-  } else {cx.fillStyle='#c87a4a';cx.fillRect(-6*s,-13*s,12*s,4*s);}
-  // throwing arm — in portrait, boss is at TOP RIGHT, throws DOWN-LEFT
-  if(throwing){
-    cx.fillStyle=face;cx.fillRect(-22*s,0,8*s,6*s);cx.fillRect(-28*s,4*s,8*s,6*s);
-  } else {
-    cx.fillStyle=face;cx.fillRect(12*s,-3*s,6*s,22*s);
-  }
-  if(anger>0.7){
-    cx.fillStyle='rgba(255,60,60,0.3)';
-    for(let i=0;i<3;i++){cx.beginPath();cx.arc(-12*s+i*9*s,-44*s,4+i,0,Math.PI*2);cx.fill();}
-  }
-  cx.restore();
-}
-
-function drawProj(cx,p){
-  cx.save();cx.translate(p.x+p.pw/2,p.y+p.ph/2);cx.rotate(p.rot);
-  cx.fillStyle='rgba(0,0,0,0.4)';cx.fillRect(-p.pw/2+3,-p.ph/2+3,p.pw,p.ph);
-  cx.fillStyle=p.col;cx.fillRect(-p.pw/2,-p.ph/2,p.pw,p.ph);
-  cx.fillStyle='rgba(0,0,0,0.9)';
-  cx.font=`900 ${Math.max(10,p.pw/4)}px Courier New`;
-  cx.textAlign='center';cx.textBaseline='middle';
-  cx.fillText(p.name,0,0);
-  cx.restore();
-}
-
-function drawBg(){
-  ctx.fillStyle='#0A0A0F';ctx.fillRect(0,0,W,H);
-  // HUD area top
-  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,W,H*PLAY_TOP_PCT);
-  // floor area bottom
-  ctx.fillStyle='#0d0d18';ctx.fillRect(0,H*PLAY_BOT_PCT,W,H*(1-PLAY_BOT_PCT));
-  // gold lines
-  ctx.fillStyle='#C9A84C';ctx.fillRect(0,H*PLAY_TOP_PCT,W,2);ctx.fillRect(0,H*PLAY_BOT_PCT,W,2);
-  // scrolling floor tiles
-  const off=bgOff%80;
-  for(let x=-off;x<W+80;x+=80){
-    ctx.fillStyle='#111120';ctx.fillRect(x,H*PLAY_BOT_PCT+2,78,H*(1-PLAY_BOT_PCT)-2);
-  }
-  // office bg - vertical stripes (windows)
-  const woff=(bgOff*0.3)%160;
-  for(let x=-woff;x<W+160;x+=160){
-    ctx.fillStyle='#0d1520';ctx.fillRect(x+10,H*PLAY_TOP_PCT+8,100,H*(PLAY_BOT_PCT-PLAY_TOP_PCT)-16);
-    ctx.fillStyle='rgba(74,144,217,0.05)';ctx.fillRect(x+12,H*PLAY_TOP_PCT+10,96,H*(PLAY_BOT_PCT-PLAY_TOP_PCT)-20);
-    ctx.fillStyle='#1a1a2a';ctx.fillRect(x+58,H*PLAY_TOP_PCT+10,3,H*(PLAY_BOT_PCT-PLAY_TOP_PCT)-20);
-  }
-}
-
-// safe text
-function T(text,x,y,size,color,align,weight){
-  ctx.save();
-  ctx.fillStyle=color||'#fff';
-  ctx.font=`${weight||900} ${Math.round(size)}px Courier New`;
-  ctx.textAlign=align||'center';
-  ctx.textBaseline='middle';
-  ctx.fillText(text,x,y);
-  ctx.restore();
-}
-
-function getLvl(){return LEVELS[Math.min(curLvl-1,LEVELS.length-1)];}
-
-function getSpawnRate(){
-  const lvl=getLvl();
-  // get faster over time within level
-  const timeBonus=Math.min(gTime/120,0.4);
-  return lvl.rate*(1-timeBonus);
-}
-
-function spawnProj(){
-  const lvl=getLvl();
-  const spd=getProjSpeed();
-  const {pw,ph}=getProjSize();
-  const cnt=lvl.cnt+(Math.random()<0.3?1:0);
-  const playH=H*(PLAY_BOT_PCT-PLAY_TOP_PCT);
-  const playTop=H*PLAY_TOP_PCT;
-
-  for(let i=0;i<cnt;i++){
-    let col,name;
-    if(lvl.obj==='CHAOS'){
-      const cd=CHAOS_D[Math.floor(Math.random()*CHAOS_D.length)];
-      col=cd.col;name=cd.n;
-    } else {col=lvl.col;name=lvl.obj;}
-    const spread=playH/Math.max(cnt,1);
-    const y=playTop+i*spread+Math.random()*spread*0.6;
-    projs.push({
-      x:W+10,y,pw,ph,
-      vx:-(spd+Math.random()*spd*0.4),
-      vy:(Math.random()-0.5)*spd*0.3,
-      rot:0,rs:(Math.random()-0.5)*0.15,
-      col,name
-    });
-  }
-  BOSS.throwAnim=0.5;
-}
-
-function hitCheck(p){
-  const m=4;
-  const px=P.x-P.w/2+m, py=P.y-P.h/2+m;
-  const pw=P.w-m*2, ph=P.h-m*2;
-  return!(px+pw<p.x||px>p.x+p.pw||py+ph<p.y||py>p.y+p.ph);
-}
-
-function update(dt){
-  splashT+=dt; bgOff+=1.2;
-  if(STATE==='lst'){lstT-=dt;if(lstT<=0)STATE='playing';return;}
-  if(STATE!=='playing')return;
-
-  gTime+=dt; score=Math.floor(gTime);
-  const nl=score<30?1:score<60?2:score<90?3:score<120?4:score<150?5:6;
-  if(nl!==curLvl&&nl>lastLvl){
-    curLvl=nl;lastLvl=nl;
-    projs=[];
-    STATE='lst';lstT=lstDur;return;
-  }
-
-  BOSS.anger=Math.min(gTime/180,1);
-  if(BOSS.throwAnim>0)BOSS.throwAnim-=dt*3;
-
-  // player physics
-  P.vy+=P.grav;
-  P.y+=P.vy;
-  P.rot=Math.max(-0.35,Math.min(0.35,P.vy*0.04));
-
-  const playTop=H*PLAY_TOP_PCT+P.h/2;
-  const playBot=H*PLAY_BOT_PCT-P.h/2;
-  if(P.y<playTop){P.y=playTop;P.vy=0;}
-  if(P.y>playBot){P.y=playBot;P.vy=0;}
-
-  P.trail.push({x:P.x,y:P.y,a:0.3});
-  if(P.trail.length>6)P.trail.shift();
-  P.trail.forEach(t=>t.a-=0.06);
-
-  // spawn
-  spT-=dt;
-  if(spT<=0){spawnProj();spT=getSpawnRate();}
-
-  // update projs
-  for(let i=projs.length-1;i>=0;i--){
-    const p=projs[i];
-    p.x+=p.vx; p.y+=p.vy; p.rot+=p.rs;
-    const pTop=H*PLAY_TOP_PCT, pBot=H*PLAY_BOT_PCT-p.ph;
-    if(p.y<pTop){p.y=pTop;p.vy*=-0.6;}
-    if(p.y>pBot){p.y=pBot;p.vy*=-0.6;}
-    if(p.x+p.pw<0){projs.splice(i,1);continue;}
-    if(hitCheck(p)){
-      for(let j=0;j<12;j++)parts.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*8,vy:(Math.random()-0.5)*8,life:1,col:p.col});
-      STATE='dead';
-      if(score>best){best=score;localStorage.setItem('syb_best',best);}
-      return;
-    }
-  }
-
-  for(let i=parts.length-1;i>=0;i--){
-    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.3;p.life-=0.05;
-    if(p.life<=0)parts.splice(i,1);
-  }
-
-  MS.forEach(m=>{
-    if(!msShown[m.t]&&score>=m.t){msShown[m.t]=true;msMsg=m.m;msTimer=2.5;}
-  });
-  if(msTimer>0)msTimer-=dt;
-}
-
-// ── SCREENS ──
-function drawSplash(){
-  ctx.fillStyle='rgba(10,10,15,0.95)';ctx.fillRect(0,0,W,H);
-
-  T('SURVIVE',W/2,H*0.14,W*0.14,'#C9A84C','center',900);
-  T('YOUR BOSS',W/2,H*0.25,W*0.14,'#C9A84C','center',900);
-
-  T("They won't stop.",W/2,H*0.37,W*0.048,'#fff','center',700);
-  T("Neither should you.",W/2,H*0.43,W*0.048,'#fff','center',700);
-
-  T('Every office has a boss who never stops.',W/2,H*0.52,W*0.036,'#AAAABC','center',700);
-  T('The deadlines. The emails. The chaos.',W/2,H*0.57,W*0.036,'#AAAABC','center',700);
-  T('But dodging them feels really good.',W/2,H*0.62,'#C9A84C','center',700);
-
-  // donation box
-  const dw=W*0.88,dh=H*0.1,dx=W/2-dw/2,dy=H*0.68;
-  ctx.fillStyle='rgba(201,168,76,0.1)';ctx.fillRect(dx,dy,dw,dh);
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=2;ctx.strokeRect(dx,dy,dw,dh);
-  T('❤️  Setiap penjualan — 10% langsung disumbangkan ke yayasan.',W/2,dy+dh*0.35,W*0.034,'#fff','center',700);
-  T('Bukan janji. Gue share buktinya setiap bulan.',W/2,dy+dh*0.72,W*0.03,'#AAAABC','center',700);
-
-  const pulse=0.5+0.5*Math.sin(splashT*3);
-  ctx.globalAlpha=pulse;
-  T('TAP UNTUK LANJUT',W/2,H*0.86,W*0.048,'#fff','center',900);
-  ctx.globalAlpha=1;
-  T('the40reset.github.io',W/2,H*0.93,W*0.028,'rgba(170,170,188,0.5)','center',700);
-}
-
-function drawCharSelect(){
-  ctx.fillStyle='rgba(10,10,15,0.97)';ctx.fillRect(0,0,W,H);
-  T('SURVIVE YOUR BOSS',W/2,H*0.08,W*0.072,'#C9A84C','center',900);
-  T('Who are you today?',W/2,H*0.17,W*0.055,'#fff','center',900);
-  T('Choose. Then survive.',W/2,H*0.23,W*0.036,'#AAAABC','center',700);
-
-  const s=P.w/20;
-  const bw=W*0.36,bh=H*0.32;
-  const mx=W*0.25,fx=W*0.75,cy=H*0.55;
-
-  // male
-  ctx.fillStyle=selChar==='male'?'rgba(201,168,76,0.15)':'rgba(255,255,255,0.04)';
-  ctx.fillRect(mx-bw/2,cy-bh/2,bw,bh);
-  ctx.strokeStyle=selChar==='male'?'#C9A84C':'#2A2A3A';ctx.lineWidth=2.5;
-  ctx.strokeRect(mx-bw/2,cy-bh/2,bw,bh);
-  drawChar(ctx,mx,cy-bh*0.06,false,false);
-  T('HIM',mx,cy+bh*0.42,W*0.05,selChar==='male'?'#C9A84C':'#AAAABC','center',900);
-
-  // female
-  ctx.fillStyle=selChar==='female'?'rgba(201,168,76,0.15)':'rgba(255,255,255,0.04)';
-  ctx.fillRect(fx-bw/2,cy-bh/2,bw,bh);
-  ctx.strokeStyle=selChar==='female'?'#C9A84C':'#2A2A3A';
-  ctx.strokeRect(fx-bw/2,cy-bh/2,bw,bh);
-  drawChar(ctx,fx,cy-bh*0.06,true,false);
-  T('HER',fx,cy+bh*0.42,W*0.05,selChar==='female'?'#C9A84C':'#AAAABC','center',900);
-
-  const sb_w=W*0.6,sb_h=H*0.1,sb_x=W/2-sb_w/2,sb_y=H*0.87;
-  ctx.fillStyle='#C9A84C';ctx.fillRect(sb_x,sb_y,sb_w,sb_h);
-  T('PLAY →',W/2,sb_y+sb_h/2,W*0.056,'#0A0A0F','center',900);
-}
-
-function drawLevelStory(){
-  ctx.fillStyle='rgba(10,10,15,0.92)';ctx.fillRect(0,0,W,H);
-  const lvl=getLvl();
-  ctx.fillStyle='rgba(201,168,76,0.1)';ctx.fillRect(W*0.04,H*0.1,W*0.92,H*0.8);
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=2;ctx.strokeRect(W*0.04,H*0.1,W*0.92,H*0.8);
-  T('LEVEL '+lvl.n,W/2,H*0.22,W*0.09,'#C9A84C','center',900);
-  T(lvl.name,W/2,H*0.34,W*0.076,'#fff','center',900);
-  lvl.story.forEach((line,i)=>T(line,W/2,H*0.5+i*H*0.1,W*0.042,'#AAAABC','center',700));
-  const pct=1-lstT/lstDur;
-  ctx.fillStyle='rgba(201,168,76,0.2)';ctx.fillRect(W*0.15,H*0.87,W*0.7,6);
-  ctx.fillStyle='#C9A84C';ctx.fillRect(W*0.15,H*0.87,W*0.7*pct,6);
-  T('GET READY...',W/2,H*0.93,W*0.04,'#AAAABC','center',700);
-}
-
-function drawHUD(){
-  T(score+'s',W/2,H*(PLAY_TOP_PCT/2),W*0.07,'#C9A84C','center',900);
-  const lvl=getLvl();
-  T('LVL '+curLvl+' — '+lvl.name,W*0.03,H*(PLAY_TOP_PCT/2),W*0.036,'rgba(201,168,76,0.9)','left',900);
-  // anger bar
-  const bw=W*0.22,bh=H*0.035,bx=W-bw-W*0.03,by=H*(PLAY_TOP_PCT/2)-bh/2;
-  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(bx,by,bw,bh);
-  ctx.fillStyle=BOSS.anger>0.7?'#E05555':BOSS.anger>0.4?'#EF9F27':'#1D9E75';
-  ctx.fillRect(bx,by,bw*BOSS.anger,bh);
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
-  T('ANGER',bx+bw/2,by+bh/2,W*0.024,'#fff','center',900);
-  // milestone
-  if(msTimer>0){
-    ctx.globalAlpha=Math.min(1,msTimer*2);
-    const mw=W*0.88,mh=H*0.065,mx=W/2-mw/2,my=H*(PLAY_TOP_PCT)+4;
-    ctx.fillStyle='rgba(0,0,0,0.9)';ctx.fillRect(mx,my,mw,mh);
-    ctx.strokeStyle='#C9A84C';ctx.lineWidth=1.5;ctx.strokeRect(mx,my,mw,mh);
-    T(msMsg,W/2,my+mh/2,W*0.036,'#fff','center',700);
-    ctx.globalAlpha=1;
-  }
-}
-
-function drawGameOver(){
-  ctx.fillStyle='rgba(10,10,15,0.95)';ctx.fillRect(0,0,W,H);
-  T('OVERLOADED.',W/2,H*0.1,W*0.09,'#E05555','center',900);
-  let msg=['Game Over. Your boss wins.','For now.'];
-  if(score>=240)msg=['YOU ARE A PRO.','You can dodge anything.'];
-  else if(score>=180)msg=['Legendary.','Your boss needs therapy.'];
-  else if(score>=90)msg=['Your boss is impressed.','Will never admit it.'];
-  else if(score>=30)msg=['Not bad.','Boss is mildly annoyed.'];
-  msg.forEach((l,i)=>T(l,W/2,H*0.19+i*H*0.06,W*0.044,'#AAAABC','center',700));
-  T(score+'s',W/2,H*0.38,W*0.16,'#C9A84C','center',900);
-  T('BEST: '+best+'s',W/2,H*0.47,W*0.038,'#AAAABC','center',700);
-  // donation
-  const dw=W*0.88,dh=H*0.085,dx=W/2-dw/2,dy=H*0.52;
-  ctx.fillStyle='rgba(201,168,76,0.08)';ctx.fillRect(dx,dy,dw,dh);
-  ctx.strokeStyle='#C9A84C';ctx.lineWidth=1.5;ctx.strokeRect(dx,dy,dw,dh);
-  T('❤️  Setiap penjualan — 10% disumbangkan ke yayasan. Bukan janji.',W/2,dy+dh/2,W*0.033,'#fff','center',700);
-  // CTA
-  const cy=H*0.625,ch=H*0.2,cp=W*0.04;
-  ctx.fillStyle='#C9A84C';ctx.fillRect(cp,cy,W-cp*2,ch);
-  T('Kepikiran mau resign?',W/2,cy+ch*0.18,W*0.054,'#0A0A0F','center',900);
-  T('Pastikan keputusanmu lahir dari kejernihan,',W/2,cy+ch*0.42,W*0.034,'#0A0A0F','center',700);
-  T('bukan dari kepanikan.',W/2,cy+ch*0.57,W*0.034,'#0A0A0F','center',700);
-  T('Cek kesiapan resign → The 40 Reset',W/2,cy+ch*0.78,W*0.038,'#0A0A0F','center',900);
-  // buttons
-  const by2=H*0.84,bw2=W*0.4,bh2=H*0.08;
-  ctx.fillStyle='rgba(255,255,255,0.15)';ctx.fillRect(W*0.04,by2,bw2,bh2);
-  ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(W*0.04,by2,bw2,bh2);
-  T('RETRY',W*0.04+bw2/2,by2+bh2/2,W*0.042,'#fff','center',900);
-  ctx.fillStyle='rgba(255,255,255,0.05)';ctx.fillRect(W*0.56,by2,bw2,bh2);
-  ctx.strokeRect(W*0.56,by2,bw2,bh2);
-  T('SHARE',W*0.56+bw2/2,by2+bh2/2,W*0.042,'#fff','center',900);
-}
-
-function draw(){
-  drawBg();
-  projs.forEach(p=>drawProj(ctx,p));
-  parts.forEach(p=>{ctx.globalAlpha=p.life;ctx.fillStyle=p.col;ctx.fillRect(p.x-4,p.y-4,8,8);});
-  ctx.globalAlpha=1;
-  P.trail.forEach(t=>{ctx.globalAlpha=Math.max(0,t.a);ctx.fillStyle='rgba(201,168,76,0.18)';ctx.fillRect(t.x-4,t.y-4,8,8);});
-  ctx.globalAlpha=1;
-  if(STATE==='playing'||STATE==='dead'){
-    ctx.save();ctx.translate(P.x,P.y);ctx.rotate(P.rot);
-    drawChar(ctx,0,0,selChar==='female',Math.abs(P.vy)>P.jump*0.7||STATE==='dead');
-    ctx.restore();
-  }
-  // boss: portrait = top right corner
-  drawBoss(ctx,W*0.82,H*PLAY_TOP_PCT+H*0.06);
-  if(STATE==='playing')drawHUD();
-  if(STATE==='splash')drawSplash();
-  else if(STATE==='charselect')drawCharSelect();
-  else if(STATE==='lst')drawLevelStory();
-  else if(STATE==='dead')drawGameOver();
-}
-
-function tap(x,y){
-  if(STATE==='splash'){STATE='charselect';return;}
-  if(STATE==='charselect'){
-    const bw=W*0.36,bh=H*0.32,cy=H*0.55;
-    if(x>W*0.25-bw/2&&x<W*0.25+bw/2&&y>cy-bh/2&&y<cy+bh/2){selChar='male';return;}
-    if(x>W*0.75-bw/2&&x<W*0.75+bw/2&&y>cy-bh/2&&y<cy+bh/2){selChar='female';return;}
-    const sb_w=W*0.6,sb_h=H*0.1,sb_x=W/2-sb_w/2,sb_y=H*0.87;
-    if(x>sb_x&&x<sb_x+sb_w&&y>sb_y&&y<sb_y+sb_h){startGame();return;}
-    return;
-  }
-  if(STATE==='playing'){P.vy=P.jump;return;}
-  if(STATE==='dead'){
-    const cy=H*0.625,ch=H*0.2,cp=W*0.04;
-    if(x>cp&&x<W-cp&&y>cy&&y<cy+ch){window.open('https://lynk.id/the_40_reset','_blank');return;}
-    const by2=H*0.84,bh2=H*0.08;
-    if(x>W*0.04&&x<W*0.44&&y>by2&&y<by2+bh2){restartGame();return;}
-    if(x>W*0.56&&x<W*0.96&&y>by2&&y<by2+bh2){shareScore();return;}
-    restartGame();
-  }
-}
-
-function shareScore(){
-  const text=`Gue bertahan ${score} detik di SURVIVE YOUR BOSS! 😤\nBisa ngalahin gue?\nthe40reset.github.io/survive-your-boss\n#SurviveYourBoss #The40Reset`;
-  if(navigator.share)navigator.share({title:'SURVIVE YOUR BOSS',text});
-  else navigator.clipboard.writeText(text).then(()=>alert('Disalin!'));
-}
-
-function startGame(){
-  setPlayerSize();
-  P.y=H*0.5;P.vy=0;P.rot=0;P.trail=[];
-  projs=[];parts=[];spT=1.2;gTime=0;score=0;bgOff=0;
-  curLvl=1;lastLvl=1;msShown={};msMsg='';msTimer=0;
-  BOSS.anger=0;BOSS.throwAnim=0;
-  STATE='lst';lstT=lstDur;
-}
-function restartGame(){startGame();}
-
-function initGame(){
-  resize();
-  setPlayerSize();
-  STATE='splash';splashT=0;
-  lt=performance.now();
-  requestAnimationFrame(loop);
-}
-
-function loop(ts){
-  const dt=Math.min((ts-lt)/1000,0.05);lt=ts;
-  update(dt);draw();
-  requestAnimationFrame(loop);
-}
-
-c.addEventListener('click',e=>{const r=c.getBoundingClientRect();tap((e.clientX-r.left)*(W/r.width),(e.clientY-r.top)*(H/r.height));});
-c.addEventListener('touchstart',e=>{e.preventDefault();const r=c.getBoundingClientRect(),t=e.touches[0];tap((t.clientX-r.left)*(W/r.width),(t.clientY-r.top)*(H/r.height));},{passive:false});
-document.addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='ArrowUp')&&STATE==='playing'){e.preventDefault();P.vy=P.jump;}});
-window.addEventListener('resize',()=>{resize();setPlayerSize();});
+function drawDead(){bg();text(lang==='id'?'KAMU TUMBANG.':'GAME OVER',W/2,H*.12,40,'#ff4c4c');text(lang==='id'?'Bertahan:':'Survived:',W/2,H*.21,18,'#fff');text(Math.floor(score)+' '+(lang==='id'?'DETIK':'SEC'),W/2,H*.29,46,'#ffd76a');text(lang==='id'?'Bos menang hari ini.':'Boss wins today.',W/2,H*.38,18,'#fff');text(lang==='id'?'Besok belum tentu.':'Tomorrow is different.',W/2,H*.43,18,'#fff');text(deadQuote,W/2,H*.50,16,'#d9d9df');roundRect(W*.08,H*.56,W*.84,96,16,'rgba(255,55,55,.08)','#ff4c4c');text('❤️ 10%',W*.24,H*.60,22,'#ff4c4c');text(lang==='id'?'dari pembayaran Anda':'of your payment',W*.58,H*.60,16,'#fff');text(lang==='id'?'akan didonasikan.':'will be donated.',W/2,H*.65,15,'#fff');text(lang==='id'?'Terima kasih sudah bermain.':'Thank you for playing.',W/2,H*.69,15,'#fff');roundRect(W*.08,H*.76,W*.84,60,13,'#d6ae3d');text(lang==='id'?'MAIN LAGI':'PLAY AGAIN',W/2,H*.76+30,21,'#08080c');roundRect(W*.08,H*.86,W*.84,75,16,'rgba(255,255,255,.04)','#d6ae3d');text(lang==='id'?'Lagi capek kerja?':'Tired of work?',W/2,H*.885,16,'#ffd76a');text(lang==='id'?'Lanjutkan perjalananmu di The 40 Reset':'Continue your journey at The 40 Reset',W/2,H*.92,14,'#fff');text('LYNK.ID  →',W/2,H*.95,14,'#ffd76a')}
+function draw(){if(STATE==='select')drawSelect();else if(STATE==='story')drawStory();else if(STATE==='play')drawGame();else if(STATE==='dead')drawDead()}
+function loop(ts){let dt=Math.min((ts-last)/1000,.05);last=ts;update(dt);draw();requestAnimationFrame(loop)}
+c.addEventListener('pointerdown',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left),y=(e.clientY-r.top);if(STATE==='select'){let bw=W*.39,bh=H*.42,by=H*.28;if(x>W*.07&&x<W*.07+bw&&y>by&&y<by+bh){sel='male';return}if(x>W*.54&&x<W*.54+bw&&y>by&&y<by+bh){sel='female';return}if(y>H*.79&&y<H*.88){startRun();return}}else if(STATE==='play'){jump()}else if(STATE==='dead'){if(y>H*.76&&y<H*.84)reset();else if(y>H*.86){window.open(BUY_URL,'_blank')}else reset()}});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&STATE==='play'){e.preventDefault();jump()}});window.addEventListener('resize',resize);
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);return this}}
+applyLang();
 </script>
 </body>
 </html>
