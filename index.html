@@ -29,19 +29,51 @@ function miniCanvas(){const b=document.getElementById('bossHero'),r=document.get
 window.addEventListener('load',miniCanvas);window.addEventListener('resize',miniCanvas);
 function drawPersonIcon(cx,x,y,s,female,run){cx.save();cx.translate(x,y);cx.scale(s,s);cx.rotate(run?-0.12:0);let skin='#f3aa64';cx.fillStyle='#1e2430';cx.fillRect(-13,4,10,24);cx.fillRect(4,4,10,24);cx.fillStyle='#f7f7f3';cx.fillRect(-16,-20,32,28);cx.fillStyle='#b9272d';cx.fillRect(-3,-19,7,26);cx.fillStyle=skin;cx.fillRect(-14,-48,28,30);cx.fillStyle=female?'#2a130d':'#4b2b12';cx.fillRect(-16,-52,32,9);if(female){cx.fillRect(-18,-42,7,30);cx.fillRect(11,-42,7,30);cx.fillStyle='#111827';cx.fillRect(-17,-1,34,30)}cx.fillStyle='#101014';cx.fillRect(-9,-36,5,7);cx.fillRect(5,-36,5,7);cx.fillStyle='#743d2d';cx.fillRect(-7,-25,14,5);cx.fillStyle='#101014';cx.fillRect(run?-25:-19,run?-2:-8,8,20);cx.fillRect(run?18:13,run?-13:-8,8,20);cx.restore()}
 function drawBossIcon(cx,x,y,s,anger){cx.save();cx.translate(x,y);cx.scale(s,s);const face=anger>.7?'#ee443f':anger>.35?'#e98b5d':'#f0a45f';cx.fillStyle='#0d1230';cx.fillRect(-30,-4,60,62);cx.fillStyle='#fff';cx.fillRect(-12,-4,24,44);cx.fillStyle='#d83b38';cx.fillRect(-4,-4,9,38);cx.fillStyle=face;cx.fillRect(-25,-66,50,58);cx.fillStyle='#301a0c';cx.fillRect(-25,-70,50,12);cx.fillRect(-28,-58,10,43);cx.fillRect(18,-58,10,43);cx.fillStyle='#111';cx.fillRect(-17,-43,12,10);cx.fillRect(5,-43,12,10);cx.fillStyle=anger>.55?'#5e1111':'#9d6043';cx.fillRect(-15,-24,30,8);cx.restore()}
-const c=document.getElementById('c'),ctx=c.getContext('2d');let W=0,H=0,DPR=1,STATE='select',last=0,score=0,best=+localStorage.getItem('syb_best_v3')||0,level=1,spawn=0,objs=[],parts=[],sel='male',storyT=0,quoteT=0,quote='',milestone='',milestoneT=0,deadQuote='',started=false;
+const c=document.getElementById('c'),ctx=c.getContext('2d');let W=0,H=0,DPR=1,STATE='select',last=0,score=0,best=+localStorage.getItem('syb_best_v3')||0,level=1,spawn=0,objs=[],parts=[],sel='male',storyT=0,tutorialT=0,quoteT=0,nextQuote=0,quote='',milestone='',milestoneT=0,deadQuote='',started=false;
 const P={x:0,y:0,vy:0,w:28,h:40,rot:0};
-const levels=[{t:0,n:'REVISI LAPORAN',enN:'REPORT REVISION',id:'Senin pagi.\nBos menemukan 47 kesalahan\ndi laporan Jumat kamu.',en:'Monday morning.\nYour boss found 47 mistakes\nin your Friday report.',obj:'PAPER',col:'#f4f2e9',rate:1.05,cnt:1},{t:30,n:'EMAIL URGENT',enN:'URGENT EMAILS',id:'09:00 pagi.\n23 email masuk.\nSemuanya URGENT.',en:'09:00 AM.\n23 emails arrived.\nAll marked URGENT.',obj:'EMAIL',col:'#eef2f7',rate:.82,cnt:1},{t:60,n:'PROYEK DADAKAN',enN:'SUDDEN PROJECTS',id:'3 proyek baru.\nDeadline besok pagi.\nKamu baru tahu hari ini.',en:'3 new projects.\nDue tomorrow morning.\nYou just found out today.',obj:'FOLDER',col:'#d6ae3d',rate:.62,cnt:2},{t:90,n:'MEETING MENDADAK',enN:'SUDDEN MEETING',id:'Katanya sebentar.\nTernyata 2 jam.\nDeadline tetap jalan.',en:'He said quick meeting.\nIt took 2 hours.\nDeadline still stands.',obj:'MEETING',col:'#4a90d9',rate:.46,cnt:2},{t:120,n:'EXCEL NERAKA',enN:'EXCEL HELL',id:'Pivot table katanya gampang.\n300 baris. Formula salah.\n30 menit. Go.',en:'Pivot table is easy, he said.\n300 rows. Wrong formulas.\n30 minutes. Go.',obj:'EXCEL',col:'#39a874',rate:.34,cnt:3},{t:150,n:'TOTAL CHAOS',enN:'TOTAL CHAOS',id:'Semuanya urgent.\nSemua dilempar ke kamu.\nBertahan.',en:'Everything is urgent.\nEverything is thrown at you.\nSurvive.',obj:'CHAOS',col:'#a56cff',rate:.25,cnt:4}];
-const quotesID=['Tolong revisi sedikit ya...','Bisa meeting sebentar?','Ini urgent banget.','Kamu kan masih muda.','Anggap ini kesempatan belajar.','Kerjaan tim bantu handle dulu.'];
-const quotesEN=['Small revision please... 😡','Quick meeting?','This is very urgent.','You are still young.','This is a learning opportunity.','Please help the team for now.'];
+const levels=[
+  {t:0,n:'REVISI LAPORAN',enN:'REPORT REVISION',id:'Senin pagi.\nBos menemukan 47 kesalahan\ndi laporan Jumat kamu.',en:'Monday morning.\nYour boss found 47 mistakes\nin your Friday report.',obj:'PAPER',col:'#f4f2e9',rate:1.05,cnt:1,qID:['Tolong revisi sedikit ya...','Kok typo semua?','Print ulang sekarang.'],qEN:['Small revision please...','So many typos?','Print it again now.']},
+  {t:30,n:'EMAIL URGENT',enN:'URGENT EMAILS',id:'09:00 pagi.\n23 email masuk.\nSemuanya URGENT.',en:'09:00 AM.\n23 emails arrived.\nAll marked URGENT.',obj:'EMAIL',col:'#eef2f7',rate:.82,cnt:1,qID:['Ini urgent banget.','Inbox kamu sudah baca?','Follow up dong.'],qEN:['This is very urgent.','Did you read your inbox?','Please follow up.']},
+  {t:60,n:'PROYEK DADAKAN',enN:'SUDDEN PROJECTS',id:'3 proyek baru.\nDeadline besok pagi.\nKamu baru tahu hari ini.',en:'3 new projects.\nDue tomorrow morning.\nYou just found out today.',obj:'FOLDER',col:'#d6ae3d',rate:.62,cnt:2,qID:['Sekalian aja ya.','Tambah dikit.','Besok pagi jadi kan?'],qEN:['Please add this too.','Just a little more.','Done by tomorrow morning, right?']},
+  {t:90,n:'MEETING MENDADAK',enN:'SUDDEN MEETING',id:'Katanya sebentar.\nTernyata 2 jam.\nDeadline tetap jalan.',en:'He said quick meeting.\nIt took 2 hours.\nDeadline still stands.',obj:'MEETING',col:'#4a90d9',rate:.46,cnt:2,qID:['Bisa meeting sebentar?','Quick sync dulu.','Ada waktu?'],qEN:['Quick meeting?','Quick sync first.','Do you have time?']},
+  {t:120,n:'EXCEL NERAKA',enN:'EXCEL HELL',id:'Pivot table katanya gampang.\n300 baris. Formula salah.\n30 menit. Go.',en:'Pivot table is easy, he said.\n300 rows. Wrong formulas.\n30 minutes. Go.',obj:'EXCEL',col:'#39a874',rate:.34,cnt:3,qID:['Pivot table gampang kok.','Cuma update angka.','Formula-nya cek lagi.'],qEN:['Pivot table is easy.','Just update the numbers.','Check the formulas again.']},
+  {t:150,n:'TOTAL CHAOS',enN:'TOTAL CHAOS',id:'Semuanya urgent.\nSemua dilempar ke kamu.\nBertahan.',en:'Everything is urgent.\nEverything is thrown at you.\nSurvive.',obj:'CHAOS',col:'#a56cff',rate:.25,cnt:4,qID:['Kamu kan masih muda.','Anggap ini kesempatan belajar.','Kerjaan tim bantu handle dulu.','Kita semua keluarga di sini.'],qEN:['You are still young.','This is a learning opportunity.','Please help the team for now.','We are family here.']}
+];
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);P.w=Math.max(25,W*.07);P.h=P.w*1.38;P.x=W*.18;if(!started)P.y=H*.56}
 function initGame(){resize();STATE='select';last=performance.now();requestAnimationFrame(loop)}
 function playTop(){return H*.16}function playBot(){return H*.88}function speed(){return W*(.0052+Math.min(score/140,.9)*.0038)}function curLevel(){return levels[Math.min(level-1,levels.length-1)]}
-function startRun(){started=true;score=0;level=1;objs=[];parts=[];spawn=.8;P.x=W*.18;P.y=H*.56;P.vy=0;STATE='story';storyT=2.15;quoteT=0;milestoneT=0}
+function startRun(){started=true;score=0;level=1;objs=[];parts=[];spawn=.8;P.x=W*.18;P.y=H*.56;P.vy=0;STATE='tutorial';tutorialT=2.7;storyT=0;quoteT=0;nextQuote=6;milestoneT=0}
 function reset(){startRun()}function jump(){P.vy=-H*.0125}
-function showQuote(){quote=(lang==='id'?quotesID:quotesEN)[Math.floor(Math.random()*quotesID.length)];quoteT=1.6}
-function spawnObj(){let l=curLevel();let cnt=l.cnt+(Math.random()<.25?1:0);for(let i=0;i<cnt;i++){let h=Math.max(52,W*.14),w=h*.72;let y=playTop()+10+Math.random()*(playBot()-playTop()-h-20);let type=l.obj;if(type==='CHAOS')type=['PAPER','EMAIL','FOLDER','MEETING','EXCEL','REPORT'][Math.floor(Math.random()*6)];objs.push({x:W+w+i*w*.75,y,w,h,type,col:l.col,vx:-speed()*(1+Math.random()*.25),r:0,rs:(Math.random()-.5)*.09})}showQuote()}
-function update(dt){if(STATE==='story'){storyT-=dt;if(storyT<=0){STATE='play';showQuote()}return}if(STATE!=='play')return;score+=dt;let nl=score<30?1:score<60?2:score<90?3:score<120?4:score<150?5:6;if(nl!==level){level=nl;objs=[];STATE='story';storyT=1.85;milestone=(lang==='id'?['','30 DETIK','60 DETIK','90 DETIK','120 DETIK','150 DETIK'][level-1]:['','30 SECONDS','60 SECONDS','90 SECONDS','120 SECONDS','150 SECONDS'][level-1]);milestoneT=1.7;return}P.vy+=H*.00066;P.y+=P.vy;P.rot=Math.max(-.35,Math.min(.35,P.vy*.035));let top=playTop()+P.h/2,bot=playBot()-P.h/2;if(P.y<top){P.y=top;P.vy=0}if(P.y>bot){P.y=bot;P.vy=0}spawn-=dt;if(spawn<=0){spawnObj();spawn=curLevel().rate*(1-Math.min(score/180,.38))}for(let i=objs.length-1;i>=0;i--){let o=objs[i];o.x+=o.vx;o.r+=o.rs;if(o.x+o.w<0){objs.splice(i,1);continue}let px=P.x-P.w*.38,py=P.y-P.h*.45,pw=P.w*.76,ph=P.h*.88;if(!(px+pw<o.x||px>o.x+o.w||py+ph<o.y||py>o.y+o.h)){die();return}}if(quoteT>0)quoteT-=dt;if(milestoneT>0)milestoneT-=dt}
+function showQuote(){let l=curLevel();let arr=lang==='id'?l.qID:l.qEN;quote=arr[Math.floor(Math.random()*arr.length)];quoteT=1.75;nextQuote=score<60?18:score<120?14:10}
+function spawnObj(){let l=curLevel();let cnt=l.cnt+(Math.random()<.25?1:0);for(let i=0;i<cnt;i++){let h=Math.max(52,W*.14),w=h*.72;let y=playTop()+10+Math.random()*(playBot()-playTop()-h-20);let type=l.obj;if(type==='CHAOS')type=['PAPER','EMAIL','FOLDER','MEETING','EXCEL','REPORT'][Math.floor(Math.random()*6)];objs.push({x:W+w+i*w*.75,y,w,h,type,col:l.col,vx:-speed()*(1+Math.random()*.25),r:0,rs:(Math.random()-.5)*.09})}}
+function update(dt){
+  if(STATE==='tutorial'){
+    tutorialT-=dt;
+    if(tutorialT<=0){STATE='story';storyT=2.15}
+    return;
+  }
+  if(STATE==='story'){
+    storyT-=dt;
+    if(storyT<=0){STATE='play';nextQuote=4;quoteT=0}
+    return;
+  }
+  if(STATE!=='play')return;
+  score+=dt;
+  let nl=score<30?1:score<60?2:score<90?3:score<120?4:score<150?5:6;
+  if(nl!==level){
+    level=nl;objs=[];STATE='story';storyT=1.85;quoteT=0;nextQuote=5;
+    milestone=(lang==='id'?['','30 DETIK','60 DETIK','90 DETIK','120 DETIK','150 DETIK'][level-1]:['','30 SECONDS','60 SECONDS','90 SECONDS','120 SECONDS','150 SECONDS'][level-1]);
+    milestoneT=1.7;
+    return;
+  }
+  P.vy+=H*.00066;P.y+=P.vy;P.rot=Math.max(-.35,Math.min(.35,P.vy*.035));
+  let top=playTop()+P.h/2,bot=playBot()-P.h/2;
+  if(P.y<top){P.y=top;P.vy=0}if(P.y>bot){P.y=bot;P.vy=0}
+  spawn-=dt;if(spawn<=0){spawnObj();spawn=curLevel().rate*(1-Math.min(score/180,.38))}
+  nextQuote-=dt;if(nextQuote<=0&&quoteT<=0)showQuote();
+  for(let i=objs.length-1;i>=0;i--){let o=objs[i];o.x+=o.vx;o.r+=o.rs;if(o.x+o.w<0){objs.splice(i,1);continue}let px=P.x-P.w*.38,py=P.y-P.h*.45,pw=P.w*.76,ph=P.h*.88;if(!(px+pw<o.x||px>o.x+o.w||py+ph<o.y||py>o.y+o.h)){die();return}}
+  if(quoteT>0)quoteT-=dt;if(milestoneT>0)milestoneT-=dt
+}
 function die(){STATE='dead';let s=Math.floor(score);if(s>best){best=s;localStorage.setItem('syb_best_v3',best)}deadQuote=s<30?(lang==='id'?'Baru pemanasan.':'Just warming up.'):s<70?(lang==='id'?'Lumayan. Bos mulai kesal.':'Not bad. Boss is annoyed.'):s<130?(lang==='id'?'Kuat juga kamu.':'You are strong.'):s<180?(lang==='id'?'Bos mulai takut.':'Boss is getting scared.'):(lang==='id'?'Kamu siap jadi bos sekarang.':'You are ready to be the boss.')}
 function bg(){ctx.fillStyle='#06080d';ctx.fillRect(0,0,W,H);let grd=ctx.createLinearGradient(0,0,0,H);grd.addColorStop(0,'#0e1420');grd.addColorStop(.55,'#06080d');grd.addColorStop(1,'#050509');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(214,174,61,.55)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,playTop());ctx.lineTo(W,playTop());ctx.moveTo(0,playBot());ctx.lineTo(W,playBot());ctx.stroke();for(let x=-(score*30%160);x<W+160;x+=160){ctx.fillStyle='rgba(255,255,255,.035)';ctx.fillRect(x+18,playTop()+40,82,playBot()-playTop()-80);ctx.fillStyle='rgba(35,55,85,.18)';ctx.fillRect(x+28,playTop()+55,62,playBot()-playTop()-110)}for(let i=0;i<24;i++){ctx.fillStyle='rgba(255,211,95,.18)';ctx.fillRect((i*73+score*9)%W,playTop()+40+(i*47)%(playBot()-playTop()-80),2,2)}}
 function text(t,x,y,s,col='#fff',align='center',font='Arial'){ctx.fillStyle=col;ctx.font=`900 ${s}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(t,x,y)}
@@ -49,8 +81,23 @@ function wrapLines(str,x,y,s,col){str.split('\n').forEach((l,i)=>text(l,x,y+i*s*
 function drawSelect(){bg();text('SIAPA KAMU',W/2,H*.09,34,'#fff');text('HARI INI?',W/2,H*.14,38,'#ffd76a');text(lang==='id'?'Pilih karaktermu':'Choose your character',W/2,H*.19,16,'#e6e6e6');let bw=W*.39,bh=H*.42,by=H*.28;drawCard(W*.07,by,bw,bh,'male');drawCard(W*.54,by,bw,bh,'female');let y=H*.82;roundRect(W*.08,y,W*.84,60,12,'#d6ae3d');text(lang==='id'?'MULAI PERJUANGAN':'START THE FIGHT',W/2,y+30,19,'#08080c')}
 function drawCard(x,y,w,h,type){let active=sel===type;roundRect(x,y,w,h,14,active?'rgba(214,174,61,.16)':'rgba(255,255,255,.055)',active?'#ffd76a':'rgba(255,255,255,.25)');drawPersonIcon(ctx,x+w/2,y+h*.35,Math.min(w/80,1.15),type==='female',false);text(type==='male'?'OFFICE':'CORPORATE',x+w/2,y+h*.65,18,'#fff');text(type==='male'?'WARRIOR':'SURVIVOR',x+w/2,y+h*.72,18,'#fff');let cap=type==='male'?(lang==='id'?'Masih pura-pura':'Still pretending'):(lang==='id'?'Satu email lagi':'One email away');let cap2=type==='male'?(lang==='id'?'baik-baik saja.':'I am okay.'):(lang==='id'?'langsung resign.':'from resigning.');text(cap,x+w/2,y+h*.84,13,'#d8d8df');text(cap2,x+w/2,y+h*.9,13,'#d8d8df')}
 function roundRect(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke()}}
+
+function drawTutorial(){
+  bg();
+  text(lang==='id'?'CARA MAIN':'HOW TO PLAY',W/2,H*.20,30,'#ffd76a');
+  roundRect(W*.10,H*.28,W*.80,H*.25,18,'rgba(10,12,18,.88)','#d6ae3d');
+  text(lang==='id'?'TAP UNTUK LOMPAT':'TAP TO JUMP',W/2,H*.35,25,'#fff');
+  text(lang==='id'?'Hindari semua serangan dari Bos.':'Avoid every attack from your boss.',W/2,H*.42,16,'#e8e8ef');
+  text(lang==='id'?'Bertahan selama mungkin.':'Survive as long as possible.',W/2,H*.47,16,'#e8e8ef');
+  // demo player and paper
+  let demoX=W*.26,demoY=H*.66;
+  drawPersonIcon(ctx,demoX,demoY,P.w/28,sel==='female',true);
+  ctx.save();ctx.translate(W*.68,H*.63);ctx.rotate(-.12);ctx.fillStyle='#f4f2e9';ctx.fillRect(-24,-32,48,64);ctx.strokeStyle='#b7bdc7';ctx.strokeRect(-24,-32,48,64);ctx.strokeStyle='rgba(70,90,120,.45)';for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(-16,i*8);ctx.lineTo(16,i*8);ctx.stroke()}ctx.restore();
+  ctx.strokeStyle='#ffd76a';ctx.lineWidth=3;ctx.setLineDash([8,8]);ctx.beginPath();ctx.moveTo(W*.57,H*.63);ctx.lineTo(W*.36,H*.65);ctx.stroke();ctx.setLineDash([]);
+  text(lang==='id'?'Kertas dulu. Email nanti.':'Paper first. Email later.',W/2,H*.76,16,'#ffd76a');
+}
 function drawStory(){bg();let l=curLevel();roundRect(W*.08,H*.24,W*.84,H*.46,22,'rgba(10,12,18,.88)','#d6ae3d');text('LEVEL '+level,W/2,H*.33,28,'#ffd76a');text(lang==='id'?l.n:l.enN,W/2,H*.41,26,'#fff');wrapLines(lang==='id'?l.id:l.en,W/2,H*.52,20,'#fff');text(lang==='id'?'SIAP-SIAP...':'GET READY...',W/2,H*.76,16,'#ffd76a')}
-function drawGame(){bg();if(quoteT>0){let bx=W*.24,by=playTop()+14,bw=W*.62,bh=42;roundRect(bx,by,bw,bh,12,'rgba(6,8,13,.58)','#d6ae3d');text(quote,bx+bw/2,by+bh/2,Math.min(13,W*.031),'#fff')}objs.forEach(drawObj);ctx.save();ctx.translate(P.x,P.y);ctx.rotate(P.rot);drawPersonIcon(ctx,0,0,P.w/28,sel==='female',true);ctx.restore();drawHUD();}
+function drawGame(){bg();objs.forEach(drawObj);ctx.save();ctx.translate(P.x,P.y);ctx.rotate(P.rot);drawPersonIcon(ctx,0,0,P.w/28,sel==='female',true);ctx.restore();drawHUD();if(quoteT>0){let bw=W*.52,bh=34,bx=W*.34,by=H*.165;ctx.globalAlpha=Math.min(1,quoteT/0.35);roundRect(bx,by,bw,bh,11,'rgba(6,8,13,.82)','#d6ae3d');text('“'+quote+'”',bx+bw/2,by+bh/2,Math.min(12,W*.029),'#fff');ctx.globalAlpha=1}}
 function drawHUD(){text('LVL '+level,W*.08,H*.08,16,'#ffd76a','left');text(Math.floor(score)+'s',W/2,H*.08,37,'#ffd76a');drawBossIcon(ctx,W*.88,H*.1,Math.min(W/420,.82),Math.min(score/160,1));roundRect(W*.08,H*.12,W*.58,18,5,'rgba(0,0,0,.35)','rgba(255,255,255,.25)');ctx.fillStyle='#ff4c4c';let bars=Math.floor(Math.min(score/150,1)*10);for(let i=0;i<bars;i++)ctx.fillRect(W*.095+i*W*.047,H*.126,W*.034,6);text('ANGER',W*.15,H*.15,12,'#fff');text(lang==='id'?'TAP UNTUK LOMPAT':'TAP TO JUMP',W/2,H*.93,16,'#ffd76a')}
 
 function drawObj(o){
@@ -84,10 +131,10 @@ function drawObj(o){
   ctx.restore()
 }
 function drawDead(){bg();text(lang==='id'?'KAMU TUMBANG.':'GAME OVER',W/2,H*.12,40,'#ff4c4c');text(lang==='id'?'Bertahan:':'Survived:',W/2,H*.21,18,'#fff');text(Math.floor(score)+' '+(lang==='id'?'DETIK':'SEC'),W/2,H*.29,46,'#ffd76a');text(lang==='id'?'Bos menang hari ini.':'Boss wins today.',W/2,H*.38,18,'#fff');text(lang==='id'?'Besok belum tentu.':'Tomorrow is different.',W/2,H*.43,18,'#fff');text(deadQuote,W/2,H*.50,16,'#d9d9df');roundRect(W*.08,H*.56,W*.84,96,16,'rgba(255,55,55,.08)','#ff4c4c');text('❤️ 10%',W*.24,H*.60,22,'#ff4c4c');text(lang==='id'?'dari pembayaran Anda':'of your payment',W*.58,H*.60,16,'#fff');text(lang==='id'?'akan didonasikan.':'will be donated.',W/2,H*.65,15,'#fff');text(lang==='id'?'Terima kasih sudah bermain.':'Thank you for playing.',W/2,H*.69,15,'#fff');roundRect(W*.08,H*.76,W*.84,60,13,'#d6ae3d');text(lang==='id'?'MAIN LAGI':'PLAY AGAIN',W/2,H*.76+30,21,'#08080c');roundRect(W*.08,H*.86,W*.84,75,16,'rgba(255,255,255,.04)','#d6ae3d');text(lang==='id'?'Lagi capek kerja?':'Tired of work?',W/2,H*.885,16,'#ffd76a');text(lang==='id'?'Lanjutkan perjalananmu di The 40 Reset':'Continue your journey at The 40 Reset',W/2,H*.92,14,'#fff');text('LYNK.ID  →',W/2,H*.95,14,'#ffd76a')}
-function draw(){if(STATE==='select')drawSelect();else if(STATE==='story')drawStory();else if(STATE==='play')drawGame();else if(STATE==='dead')drawDead()}
+function draw(){if(STATE==='select')drawSelect();else if(STATE==='tutorial')drawTutorial();else if(STATE==='story')drawStory();else if(STATE==='play')drawGame();else if(STATE==='dead')drawDead()}
 function loop(ts){let dt=Math.min((ts-last)/1000,.05);last=ts;update(dt);draw();requestAnimationFrame(loop)}
-c.addEventListener('pointerdown',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left),y=(e.clientY-r.top);if(STATE==='select'){let bw=W*.39,bh=H*.42,by=H*.28;if(x>W*.07&&x<W*.07+bw&&y>by&&y<by+bh){sel='male';return}if(x>W*.54&&x<W*.54+bw&&y>by&&y<by+bh){sel='female';return}if(y>H*.79&&y<H*.88){startRun();return}}else if(STATE==='play'){jump()}else if(STATE==='dead'){if(y>H*.76&&y<H*.84)reset();else if(y>H*.86){window.open(BUY_URL,'_blank')}else reset()}});
-document.addEventListener('keydown',e=>{if(e.code==='Space'&&STATE==='play'){e.preventDefault();jump()}});window.addEventListener('resize',resize);
+c.addEventListener('pointerdown',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left),y=(e.clientY-r.top);if(STATE==='select'){let bw=W*.39,bh=H*.42,by=H*.28;if(x>W*.07&&x<W*.07+bw&&y>by&&y<by+bh){sel='male';return}if(x>W*.54&&x<W*.54+bw&&y>by&&y<by+bh){sel='female';return}if(y>H*.79&&y<H*.88){startRun();return}}else if(STATE==='tutorial'){STATE='story';storyT=2.15}else if(STATE==='story'){STATE='play';nextQuote=4}else if(STATE==='play'){jump()}else if(STATE==='dead'){if(y>H*.76&&y<H*.84)reset();else if(y>H*.86){window.open(BUY_URL,'_blank')}else reset()}});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&STATE==='play'){e.preventDefault();jump()}else if(e.code==='Space'&&(STATE==='tutorial'||STATE==='story')){e.preventDefault();STATE=STATE==='tutorial'?'story':'play';storyT=2.15;nextQuote=4}});window.addEventListener('resize',resize);
 if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);return this}}
 applyLang();
 </script>
